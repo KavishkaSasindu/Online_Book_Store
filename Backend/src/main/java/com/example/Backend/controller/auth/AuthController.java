@@ -22,6 +22,7 @@ import java.io.IOException;
 @Data
 @RestController
 @RequestMapping("/auth")
+@CrossOrigin("http://localhost:5173/")
 public class AuthController {
 
     private AuthService authService;
@@ -38,7 +39,7 @@ public class AuthController {
 
 //    register user
     @PostMapping("/user-register")
-    public ResponseEntity<?> registerUser(@RequestPart UserProfile user,@RequestPart MultipartFile image) throws IOException {
+    public ResponseEntity<?> registerUser(@RequestPart UserProfile user,@RequestPart(required = false) MultipartFile image) throws IOException {
         try{
             UserProfile returnValue = authService.registerUser(user, image);
             if(returnValue != null) {
@@ -71,7 +72,7 @@ public class AuthController {
 
 //    register author
     @PostMapping("/author-register")
-    public ResponseEntity<?> registerAuthor(@RequestPart AuthorProfile authorProfile,@RequestPart MultipartFile image) throws IOException {
+    public ResponseEntity<?> registerAuthor(@RequestPart AuthorProfile authorProfile,@RequestPart(required = false) MultipartFile image) throws IOException {
         try{
             AuthorProfile returnValue = authService.registerAuthor(authorProfile, image);
             if(returnValue != null) {
