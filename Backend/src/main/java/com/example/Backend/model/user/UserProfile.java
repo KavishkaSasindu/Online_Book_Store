@@ -1,6 +1,9 @@
 package com.example.Backend.model.user;
 
+import com.example.Backend.model.author.AuthorProfile;
 import com.example.Backend.model.embedd.Address;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -19,18 +22,14 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
+@JsonIdentityInfo(
+        generator = ObjectIdGenerators.PropertyGenerator.class,
+        property = "userId"
+)
 public class UserProfile implements UserDetails {
 
     @Id
-    @SequenceGenerator(
-            name = "user_id",
-            sequenceName = "user_gen",
-            allocationSize = 1
-    )
-    @GeneratedValue(
-            strategy = GenerationType.SEQUENCE,
-            generator = "user_gen"
-    )
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long userId;
     private String firstname;
     private String lastname;
@@ -45,9 +44,18 @@ public class UserProfile implements UserDetails {
     )
     private String password;
     private String phone;
+    @Column(
+            nullable = true
+    )
     private String imageName;
+    @Column(
+            nullable = true
+    )
     private String imageType;
     @Lob
+    @Column(
+            nullable = true
+    )
     private byte[] imageData;
     @Column(
             nullable = false,
@@ -56,7 +64,17 @@ public class UserProfile implements UserDetails {
     private LocalDateTime profileCreatedAt;
     @Enumerated(EnumType.STRING)
     private Role role;
+    @Column(
+            nullable = false
+    )
     private Address address;
+    @OneToOne(
+            mappedBy = "userProfile",
+            cascade = CascadeType.ALL,
+            fetch = FetchType.EAGER,
+            orphanRemoval = true
+    )
+    private AuthorProfile authorProfile;
 
     @PrePersist
     public void onCreate() {

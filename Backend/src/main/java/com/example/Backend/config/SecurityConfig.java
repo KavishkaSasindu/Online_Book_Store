@@ -23,10 +23,12 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
 
     private final MyUserDetailsService myUserDetailsService;
+    private final JwtFilter jwtFilter;
 
     @Autowired
-    public SecurityConfig(MyUserDetailsService myUserDetailsService) {
+    public SecurityConfig(MyUserDetailsService myUserDetailsService,JwtFilter jwtFilter) {
         this.myUserDetailsService = myUserDetailsService;
+        this.jwtFilter = jwtFilter;
     }
 
     @Bean
@@ -43,15 +45,18 @@ public class SecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http, JwtFilter jwtFilter) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(request->request
                         .requestMatchers("/auth/**","/public/**").permitAll()
                         .requestMatchers("/user/**").hasAnyAuthority("ADMIN","USER","AUTHOR")
+                        .requestMatchers("/author/**").hasAnyAuthority("ADMIN","AUTHOR")
+                        .requestMatchers("/admin/**").hasAuthority("ADMIN")
                         .anyRequest().authenticated())
                 .authenticationProvider(authenticationProvider())
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
-                .sessionManagement(session->session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+                .sessionManagement(session->session
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS));
         return http.build();
     }
 }
