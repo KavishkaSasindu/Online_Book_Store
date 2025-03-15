@@ -22,7 +22,6 @@ import java.io.IOException;
 @Data
 @RestController
 @RequestMapping("/auth")
-@CrossOrigin("http://localhost:5173/")
 public class AuthController {
 
     private AuthService authService;

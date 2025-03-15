@@ -1,13 +1,54 @@
-import React from 'react'
+import React, {useState} from 'react'
 import {motion} from "framer-motion";
+import axios from "axios";
+import {useNavigate} from "react-router-dom";
 
 const LogIn = () => {
+
+    const navigate = useNavigate();
+
+    const [logInRequest,setLogInRequest] = useState({
+        email: "",
+        password: "",
+    });
+
+    const changeData = (e) => {
+        setLogInRequest({
+            ...logInRequest,
+            [e.target.name]: e.target.value,
+        })
+    }
+
+    const handleSubmit = async (e) => {
+        e.preventDefault()
+        try{
+            const response = await axios.post("http://localhost:8080/auth/login", logInRequest);
+            const data = await response.data;
+
+            console.log(data)
+            if(response.status === 200){
+                localStorage.setItem("token", data.token);
+                localStorage.setItem("email", data.logInEmail);
+                alert(data.message);
+                navigate("/");
+            }else{
+                navigate("/auth/login");
+                alert("Login Failed");
+            }
+
+
+        }catch(error) {
+            console.log(error.message);
+        }
+    }
+
+
     return (
         <div className={"w-[100%]"}>
             <div className={"flex justify-center items-center mt-10"}>
                 {/*form section*/}
                 <div className={"w-[50%] h-full flex justify-center items-center"}>
-                    <form className="w-full max-w-lg">
+                    <form className="w-full max-w-lg" onSubmit={handleSubmit}>
                         <div className="flex flex-wrap -mx-3 mb-3">
                             <div className="w-full px-3">
                                 <label className="block uppercase tracking-wide text-gray-700 text-sm font-bold mb-2"
@@ -16,7 +57,7 @@ const LogIn = () => {
                                 </label>
                                 <input
                                     className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                                    id="email" type="email" placeholder="jane@gmail.com"/>
+                                    id="email" name={"email"} onChange={changeData} type="email" placeholder="jane@gmail.com"/>
                             </div>
                         </div>
                         <div className="flex flex-wrap -mx-3 mb-3">
@@ -27,7 +68,7 @@ const LogIn = () => {
                                 </label>
                                 <input
                                     className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                                    id="password" type="password" placeholder="******************"/>
+                                    id="password" name={"password"} onChange={changeData} type="password" placeholder="******************"/>
                             </div>
                         </div>
                         <div className="flex flex-wrap -mx-3 mb-6">
