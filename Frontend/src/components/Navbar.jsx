@@ -21,7 +21,7 @@ const Navbar = () => {
   return (
     <div>
       {token ? (
-        <div className="w-[100%] h-[60px] flex justify-center items-center bg-[#504B38] text-[#F8F3D9] fixed">
+        <div className="w-[100%] h-[60px] flex justify-center items-center bg-[#504B38] text-[#F8F3D9] fixed z-50">
           <div className="w-[90%] h-[50px]  ">
             <div className="w-full h-full flex justify-between items-center">
               {/* logo goes here */}
@@ -33,7 +33,9 @@ const Navbar = () => {
               {/* content */}
               <div>
                 <div>
-                  <button>Books</button>
+                  <Link to={"/all-books"}>
+                    <button>Books</button>
+                  </Link>
                 </div>
               </div>
 
@@ -48,7 +50,7 @@ const Navbar = () => {
           </div>
         </div>
       ) : (
-        <div className="w-[100%] h-[60px] flex justify-center items-center bg-[#504B38] text-[#F8F3D9] font-bold fixed">
+        <div className="w-[100%] h-[60px] flex justify-center items-center bg-[#504B38] text-[#F8F3D9] font-bold fixed z-50">
           <div className="w-[90%] h-[50px]  ">
             <div className="w-full h-full flex justify-between items-center">
               {/* logo goes here */}
@@ -61,7 +63,14 @@ const Navbar = () => {
                 </div>
               </div>
               {/* content */}
-              <div>Content</div>
+              <div>
+                Content
+                <div>
+                  <Link to={"/all-books"}>
+                    <button>Books</button>
+                  </Link>
+                </div>
+              </div>
               {/* profile and logout */}
               <div className="flex justify-between items-center">
                 <div className="flex justify-between items-center ">

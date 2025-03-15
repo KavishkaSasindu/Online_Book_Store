@@ -1,6 +1,5 @@
-package com.example.Backend.model.author;
+package com.example.Backend.model;
 
-import com.example.Backend.model.user.UserProfile;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
@@ -8,6 +7,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.stereotype.Component;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -34,6 +36,7 @@ public class AuthorProfile {
     private String authorName;
     private String authorBio;
 
+//    user relationship
     @OneToOne
     @JoinColumn(
             name = "user_id",
@@ -41,4 +44,14 @@ public class AuthorProfile {
             nullable = false
     )
     private UserProfile userProfile;
+
+//    book relationship
+    @OneToMany(
+            mappedBy = "authorProfile",
+            cascade = CascadeType.ALL,
+            fetch = FetchType.EAGER,
+            orphanRemoval = true
+    )
+    private List<Book> books = new ArrayList<>();
+
 }

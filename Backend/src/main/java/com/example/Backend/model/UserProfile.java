@@ -1,6 +1,5 @@
-package com.example.Backend.model.user;
+package com.example.Backend.model;
 
-import com.example.Backend.model.author.AuthorProfile;
 import com.example.Backend.model.embedd.Address;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;

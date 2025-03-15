@@ -1,6 +1,6 @@
 package com.example.Backend.dto.author;
 
-import com.example.Backend.model.user.UserProfile;
+import com.example.Backend.model.UserProfile;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
