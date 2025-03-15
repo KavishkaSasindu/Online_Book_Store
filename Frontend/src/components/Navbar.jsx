@@ -1,15 +1,16 @@
+import { div } from "framer-motion/client";
 import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 
 const Navbar = () => {
   const navigate = useNavigate();
-  const email = localStorage.getItem("email");
+  const firstname = localStorage.getItem("firstname");
   const token = localStorage.getItem("token");
 
   const logOut = () => {
-    if (email && token) {
-      localStorage.removeItem("email");
+    if (token) {
+      localStorage.removeItem("firstname");
       localStorage.removeItem("token");
       navigate("/");
     } else {
@@ -19,68 +20,61 @@ const Navbar = () => {
 
   return (
     <div>
-      {email && token ? (
-        <div className={"w-[100%] flex justify-center items-center"}>
-          <div className={"w-[90%] border"}>
-            <div className={" flex space-x-4"}>
-              <button
-                onClick={logOut}
-                className={
-                  "px-2 py-1 text-white bg-blue-900  flex justify-center items-center"
-                }
-              >
-                Log out
-              </button>
-              <button
-                className={
-                  "px-2 py-1 text-white bg-blue-900  flex justify-center items-center"
-                }
-              >
-                <Link to={""}>Books</Link>
-              </button>
-              <button
-                className={
-                  "px-2 py-1 text-white bg-blue-900  flex justify-center items-center"
-                }
-              >
-                <Link to={"/auth/login"}>Register as an author</Link>
-              </button>
-              <button
-                className={
-                  "px-2 py-1 text-white bg-blue-900  flex justify-center items-center"
-                }
-              >
-                <Link to={"/"}>Home</Link>
-              </button>
-              <h1>Hello {email}</h1>
+      {token ? (
+        <div className="w-[100%] h-[60px] flex justify-center items-center bg-[#205781] text-white fixed">
+          <div className="w-[90%] h-[50px]  ">
+            <div className="w-full h-full flex justify-between items-center">
+              {/* logo goes here */}
+              <div>
+                <div>
+                  <Link to={"/"}>Logo</Link>
+                </div>
+              </div>
+              {/* content */}
+              <div>
+                <div>
+                  <button>Books</button>
+                </div>
+              </div>
+
+              {/* profile and logout */}
+              <div className="flex justify-between items-center space-x-4">
+                <div className="font-thin">Hello {firstname}!</div>
+                <div>
+                  <button onClick={logOut}>Log out</button>
+                </div>
+              </div>
             </div>
           </div>
         </div>
       ) : (
-        <div className={"w-[100%] flex justify-center items-center"}>
-          <div className={"w-[90%] border"}>
-            <div className={" flex space-x-4"}>
-              <button
-                className={
-                  "px-2 py-1 text-white bg-blue-900  flex justify-center items-center"
-                }
-              >
-                <Link to={"/auth/login"}>Login here</Link>
-              </button>
-              <button
-                className={
-                  "px-2 py-1 text-white bg-blue-900  flex justify-center items-center"
-                }
-              >
-                <Link to={"/auth/register/user"}>Register as a user</Link>
-              </button>
-              <button
-                className={
-                  "px-2 py-1 text-white bg-blue-900  flex justify-center items-center"
-                }
-              >
-                <Link to={"/auth/login"}>Register as an author</Link>
-              </button>
+        <div className="w-[100%] h-[60px] flex justify-center items-center bg-[#205781] text-white font-bold fixed">
+          <div className="w-[90%] h-[50px]  ">
+            <div className="w-full h-full flex justify-between items-center">
+              {/* logo goes here */}
+              <div>
+                <div>
+                  {" "}
+                  <div>
+                    <Link to={"/"}>Logo</Link>
+                  </div>
+                </div>
+              </div>
+              {/* content */}
+              <div>Content</div>
+              {/* profile and logout */}
+              <div className="flex justify-between items-center">
+                <div className="flex justify-between items-center ">
+                  <div className="flex justify-between items-center space-x-4">
+                    <button>
+                      <Link to={"/auth/register-about"}>Register</Link>
+                    </button>
+                    <button>
+                      <Link to={"/auth/login"}>Sign in</Link>
+                    </button>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>

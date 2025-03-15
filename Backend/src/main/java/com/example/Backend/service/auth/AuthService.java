@@ -97,7 +97,7 @@ public class AuthService {
 //    login author ,admin,user
     @Transactional
     public LogInResponseDto logInUser(LogInRequest logInRequest) {
-        UserDetails existUser = checkExistUser(logInRequest.getEmail());
+        UserProfile existUser = (UserProfile) checkExistUser(logInRequest.getEmail());
         if(existUser != null) {
             Authentication authentication = authenticationManager
                     .authenticate(new UsernamePasswordAuthenticationToken(logInRequest.getEmail(), logInRequest.getPassword()));
@@ -106,6 +106,8 @@ public class AuthService {
                 String token = jwtService.generateToken(claims,existUser);
                 return new LogInResponseDto(
                   logInRequest.getEmail(),
+                  existUser.getFirstname()
+                  ,
                   token,
                   "LogIn successfully"
                 );
