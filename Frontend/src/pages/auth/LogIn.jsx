@@ -22,10 +22,16 @@ const LogIn = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      if (email === "" || password === "") {
+        alert("Please fill all the fields");
+        return;
+      }
+
       const response = await axios.post(
         "http://localhost:8080/auth/login",
         logInRequest
       );
+      console.log(response);
       const data = await response.data;
 
       if (response.status === 200) {
@@ -98,7 +104,7 @@ const LogIn = () => {
             <div className="flex flex-wrap -mx-3 mb-6">
               <div className={"w-full px-3"}>
                 <input
-                  className="appearance-none block w-full bg-blue-100 hover:bg-blue-300 after:bg-blue-50 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                  className="appearance-none block w-full bg-[#EBE5C2] text-[#504B38] hover:text-[#EBE5C2] hover:bg-[#504B38] border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
                   id="submit-button"
                   value={"Sign in"}
                   type="submit"

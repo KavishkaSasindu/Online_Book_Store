@@ -96,7 +96,7 @@ const RegisterUser = () => {
         >
           <img
             className="fixed"
-            src="https://cdni.iconscout.com/illustration/premium/thumb/kids-reading-book-illustration-download-in-svg-png-gif-file-formats--kid-boy-school-child-pack-education-illustrations-3238398.png"
+            src="https://media.istockphoto.com/id/1368099579/vector/man-reading-a-book-and-thinking.jpg?s=612x612&w=0&k=20&c=JvMb1RBBIi_mrysulCNZTd8LHT0aFf4zR-8eqnttBQM="
             alt="vector-image"
           />
         </motion.div>
@@ -334,7 +334,7 @@ const RegisterUser = () => {
             <div className="flex flex-wrap -mx-3 mb-6">
               <div className={"w-full px-3"}>
                 <input
-                  className="appearance-none block w-full bg-blue-100 hover:bg-blue-300 after:bg-blue-50 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                  className="appearance-none block w-full bg-[#EBE5C2] text-[#504B38] hover:text-[#EBE5C2] hover:bg-[#504B38] border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
                   id="submit-button"
                   value={"Register Me"}
                   type="submit"

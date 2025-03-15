@@ -21,7 +21,7 @@ const Navbar = () => {
   return (
     <div>
       {token ? (
-        <div className="w-[100%] h-[60px] flex justify-center items-center bg-[#205781] text-white fixed">
+        <div className="w-[100%] h-[60px] flex justify-center items-center bg-[#504B38] text-[#F8F3D9] fixed">
           <div className="w-[90%] h-[50px]  ">
             <div className="w-full h-full flex justify-between items-center">
               {/* logo goes here */}
@@ -48,7 +48,7 @@ const Navbar = () => {
           </div>
         </div>
       ) : (
-        <div className="w-[100%] h-[60px] flex justify-center items-center bg-[#205781] text-white font-bold fixed">
+        <div className="w-[100%] h-[60px] flex justify-center items-center bg-[#504B38] text-[#F8F3D9] font-bold fixed">
           <div className="w-[90%] h-[50px]  ">
             <div className="w-full h-full flex justify-between items-center">
               {/* logo goes here */}

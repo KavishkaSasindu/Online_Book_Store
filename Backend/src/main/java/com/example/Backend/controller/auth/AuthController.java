@@ -98,6 +98,9 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<?> logIn(@RequestBody LogInRequest logInRequest) {
         try{
+            if(logInRequest.getEmail().isBlank() && logInRequest.getPassword().isBlank()) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseMessageDto("logInRequest is null"));
+            }
             LogInResponseDto response = authService.logInUser(logInRequest);
             if(response != null) {
                 return ResponseEntity

@@ -18,7 +18,7 @@ const RegisterAbout = () => {
           transition={{ delay: 0.2, duration: 0.6 }}
           className="text-center mb-16 mt-15"
         >
-          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6 bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
+          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6  bg-clip-text ">
             Welcome to our Book Store!
           </h1>
           <p className="text-xl text-gray-600 mb-10 max-w-2xl mx-auto">
@@ -40,7 +40,7 @@ const RegisterAbout = () => {
         {/* Registration Options */}
         {/* Registration Options */}
         <motion.section className="mb-16">
-          <h2 className="text-3xl font-bold text-center mb-10 bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
+          <h2 className="text-3xl font-bold text-center mb-10  bg-clip-text ">
             We offer two registration options:
           </h2>
 
@@ -103,7 +103,7 @@ const RegisterAbout = () => {
               {/* Using mt-auto to push the button to the bottom */}
               <div className="mt-auto">
                 <Link to={"/auth/register/user"}>
-                  <button className="w-full py-3 px-6 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-full hover:from-blue-600 hover:to-blue-700 transition-all shadow-md hover:shadow-lg flex items-center justify-center gap-2 text-lg font-medium">
+                  <button className="w-full py-3 px-6 bg-[#EBE5C2] text-[#504B38] rounded-full hover:bg-[#504B38] hover:text-[#EBE5C2] transition-all shadow-md hover:shadow-lg flex items-center justify-center gap-2 text-lg font-medium">
                     Register as User
                   </button>
                 </Link>
@@ -168,7 +168,7 @@ const RegisterAbout = () => {
               {/* Using mt-auto to push the button to the bottom */}
               <div className="mt-auto">
                 <Link to={"/auth/register/author"}>
-                  <button className="w-full py-3 px-6 bg-gradient-to-r from-indigo-500 to-indigo-600 text-white rounded-full hover:from-indigo-600 hover:to-indigo-700 transition-all shadow-md hover:shadow-lg flex items-center justify-center gap-2 text-lg font-medium">
+                  <button className="w-full py-3 px-6 bg-[#EBE5C2] text-[#504B38] rounded-full hover:bg-[#504B38] hover:text-[#EBE5C2] transition-all shadow-md hover:shadow-lg flex items-center justify-center gap-2 text-lg font-medium">
                     Register as Author
                   </button>
                 </Link>
