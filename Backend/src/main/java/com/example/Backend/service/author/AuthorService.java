@@ -3,7 +3,6 @@ package com.example.Backend.service.author;
 import com.example.Backend.model.AuthorProfile;
 import com.example.Backend.model.Book;
 import com.example.Backend.model.UserProfile;
-import com.example.Backend.model.embedd.Address;
 import com.example.Backend.repo.AuthorRepo;
 import com.example.Backend.repo.BookRepo;
 import jakarta.transaction.Transactional;
@@ -80,7 +79,7 @@ public class AuthorService {
         }
         existingAuthor.setAuthorBio(authorProfile.getAuthorBio());
         existingAuthor.setAuthorName(authorProfile.getAuthorName());
-        
+
         if(image != null) {
             existingAuthor.getUserProfile().setImageName(image.getOriginalFilename());
             existingAuthor.getUserProfile().setImageType(image.getContentType());
@@ -106,4 +105,7 @@ public class AuthorService {
         return authorRepo.save(existingAuthor);
 
     }
+
+//    update a book by author
+
 }

@@ -46,17 +46,11 @@ public class Book {
             nullable = false
     )
     private String category;
-    @Column(
-            nullable = false
-    )
+
     private String imageName;
-    @Column(
-            nullable = false
-    )
+
     private String imageType;
-    @Column(
-            nullable = false
-    )
+
     @Lob
     private byte[] imageData;
     @ManyToOne

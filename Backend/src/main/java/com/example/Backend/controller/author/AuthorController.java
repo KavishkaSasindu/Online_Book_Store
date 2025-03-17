@@ -2,6 +2,7 @@ package com.example.Backend.controller.author;
 
 import com.example.Backend.dto.author.AuthorProfileResponse;
 import com.example.Backend.dto.author.RegisterAuthorResponseDto;
+import com.example.Backend.dto.book.BookResponse;
 import com.example.Backend.dto.commonDto.ResponseMessageDto;
 import com.example.Backend.model.AuthorProfile;
 import com.example.Backend.model.Book;
@@ -126,4 +127,7 @@ public class AuthorController {
                     .body(new ResponseMessageDto(e.getMessage()));
         }
     }
+
+//    update book by author
+
 }
