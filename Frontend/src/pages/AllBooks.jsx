@@ -1,49 +1,59 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
+import axios from "axios";
 
 const AllBooks = () => {
+  const [books, setBooks] = useState([]);
+
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [searchQuery, setSearchQuery] = useState("");
 
   // Dummy categories
   const categories = [
     "All",
-    "Fiction",
-    "Non-fiction",
-    "Science Fiction",
-    "Mystery",
-    "Romance",
-    "Fantasy",
-    "Biography",
-    "History",
+    "FICTION",
+    "NON_FICTION",
+    "SCIENCE_FICTION",
+    "MYSTERY",
+    "ROMANCE",
+    "FANTASY",
+    "BIOGRAPHY",
+    "HISTORY",
   ];
 
-  // Dummy books data (just 2 entries as requested)
-  const books = [
-    {
-      id: 1,
-      title: "The Silent Echo",
-      author: "Eliza Montgomery",
-      price: 24.99,
-      cover: "/api/placeholder/180/270",
-      rating: 4.5,
-      categories: ["Fiction", "Mystery"],
-      description:
-        "A thrilling mystery set in a small coastal town where secrets lurk beneath the surface...",
-    },
-    {
-      id: 2,
-      title: "Beyond the Horizon",
-      author: "James Holloway",
-      price: 19.99,
-      cover: "/api/placeholder/180/270",
-      rating: 4.2,
-      categories: ["Science Fiction", "Adventure"],
-      description:
-        "An epic journey through space and time that challenges our understanding of reality...",
-    },
-  ];
+  const fetchData = async () => {
+    try {
+      const response = await axios.get(
+        "http://localhost:8080/public/all-books"
+      );
+
+      const bookData = await response.data;
+
+      console.log(bookData);
+
+      const bookWithImage = await Promise.all(
+        bookData.map(async (book) => {
+          const imageData = await axios.get(
+            `http://localhost:8080/public/one-book/image/${book.bookId}`,
+            { responseType: "blob" }
+          );
+
+          console.log(book.bookId);
+          const imageUrl = URL.createObjectURL(imageData.data);
+          return {
+            ...book,
+            imageData: imageUrl,
+          };
+        })
+      );
+
+      setBooks(bookWithImage);
+      console.log(books);
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
 
   // Render stars for ratings
   const renderStars = (rating) => {
@@ -79,10 +89,14 @@ const AllBooks = () => {
     return stars;
   };
 
+  useEffect(() => {
+    fetchData();
+  }, []);
+
   return (
     <div>
       {/* Search and Filter Section */}
-      <section className="py-8 px-6 bg-[#EBE5C2] ">
+      <section className="py-8 px-6 bg-gray-200 ">
         <div className="container mx-auto mt-15">
           <div className="flex flex-col md:flex-row gap-4">
             {/* Search bar */}
@@ -155,19 +169,19 @@ const AllBooks = () => {
       <section className="py-8 px-6">
         <div className="container mx-auto">
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
-            {books.map((book) => (
+            {books.map((book, index) => (
               <div
-                key={book.id}
+                key={book.bookId}
                 className="bg-white rounded-lg overflow-hidden shadow-md hover:shadow-xl transition-shadow duration-300"
               >
                 <img
-                  src={book.cover}
-                  alt={book.title}
+                  src={book.imageData}
+                  alt={book.bookName}
                   className="w-full h-64 object-cover"
                 />
                 <div className="p-4 bg-[#EBE5C2]">
                   <h3 className="font-bold text-[#504B38] text-lg mb-1 truncate">
-                    {book.title}
+                    {book.bookName}
                   </h3>
                   <p className="text-sm font-medium text-gray-700 mb-1">
                     {book.author}

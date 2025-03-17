@@ -49,7 +49,7 @@ public class AuthorProfile {
     @OneToMany(
             mappedBy = "authorProfile",
             cascade = CascadeType.ALL,
-            fetch = FetchType.EAGER,
+            fetch = FetchType.LAZY,
             orphanRemoval = true
     )
     private List<Book> books = new ArrayList<>();

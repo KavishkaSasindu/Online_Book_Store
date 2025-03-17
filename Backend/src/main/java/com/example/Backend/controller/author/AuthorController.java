@@ -1,6 +1,9 @@
 package com.example.Backend.controller.author;
 
+import com.example.Backend.dto.author.AuthorProfileResponse;
+import com.example.Backend.dto.author.RegisterAuthorResponseDto;
 import com.example.Backend.dto.commonDto.ResponseMessageDto;
+import com.example.Backend.model.AuthorProfile;
 import com.example.Backend.model.Book;
 import com.example.Backend.service.author.AuthorService;
 import lombok.Data;
@@ -65,6 +68,58 @@ public class AuthorController {
             return ResponseEntity
                     .status(HttpStatus.BAD_REQUEST)
                     .body(returnAllBooks);
+        } catch (Exception e) {
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ResponseMessageDto(e.getMessage()));
+        }
+    }
+
+//    get author profile
+    @GetMapping("/get-profile/{authorId}")
+    public ResponseEntity<?> getAuthorProfile(@PathVariable Long authorId) {
+        try{
+            AuthorProfile returnAuthor = authorService.getAuthorProfile(authorId);
+            if(returnAuthor == null){
+                return ResponseEntity
+                        .status(HttpStatus.BAD_REQUEST)
+                        .body(new ResponseMessageDto("No Author Profile Found"));
+            }
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body(new AuthorProfileResponse(
+                            returnAuthor.getAuthorId(),
+                            returnAuthor.getAuthorName(),
+                            returnAuthor.getAuthorBio(),
+                            returnAuthor.getUserProfile()
+                    ));
+        } catch (Exception e) {
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ResponseMessageDto(e.getMessage()));
+        }
+    }
+
+//    update only author profile
+    @PutMapping("/update-profile/{authorId}")
+    public ResponseEntity<?> updateAuthorProfile(@PathVariable Long authorId,
+                                                 @RequestPart AuthorProfile authorProfile,
+                                                 @RequestPart(required = false) MultipartFile image) {
+        try{
+            AuthorProfile returnValue = authorService.updateAuthorProfile(authorId, authorProfile, image);
+            if(returnValue != null) {
+                return ResponseEntity
+                        .status(HttpStatus.OK)
+                        .body(new RegisterAuthorResponseDto(
+                                returnValue.getAuthorId(),
+                                returnValue.getAuthorName(),
+                                returnValue.getAuthorBio(),
+                                returnValue.getUserProfile()
+                        ));
+            }
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body(new ResponseMessageDto("No Author Profile Found"));
         } catch (Exception e) {
             return ResponseEntity
                     .status(HttpStatus.INTERNAL_SERVER_ERROR)

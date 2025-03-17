@@ -37,4 +37,13 @@ public class PublicService {
         Book book = bookRepo.findById(bookId).get();
         return book.getImageData();
     }
+
+//    search by bokName name
+    public List<Book> getBooksByName(String keyword) {
+        List<Book> findBooks = bookRepo.findByBookNameContains(keyword);
+        if(findBooks.isEmpty()) {
+            return null;
+        }
+        return findBooks;
+    }
 }

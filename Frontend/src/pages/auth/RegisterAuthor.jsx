@@ -41,6 +41,7 @@ const RegisterAuthor = () => {
     try {
       if (author.password !== author.rePassword) {
         alert("Password does not match");
+        return;
       }
       const authorProfile = {
         authorName: author.authorName,
@@ -105,6 +106,14 @@ const RegisterAuthor = () => {
         </motion.div>
         <motion.div
           className={"w-[50%] h-full flex justify-center items-center mt-10"}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{
+            type: "spring",
+            stiffness: 50,
+            damping: 20,
+            delay: 0.2,
+          }}
         >
           <form
             className="w-full h-full mt-35 max-w-lg space-y-5"
@@ -189,7 +198,7 @@ const RegisterAuthor = () => {
                   className="block uppercase tracking-wide text-gray-700 text-sm font-bold mb-2"
                   htmlFor="authorBio"
                 >
-                  Email
+                  Bio
                 </label>
                 <textarea
                   className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"

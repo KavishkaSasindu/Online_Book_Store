@@ -2,7 +2,6 @@ package com.example.Backend.model;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
-import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -40,14 +39,13 @@ public class Book {
     )
     private String description;
     @Column(
-            nullable = false,
-            unique = true
-    )
-    private String isbn;
-    @Column(
             nullable = false
     )
     private Double price;
+    @Column(
+            nullable = false
+    )
+    private String category;
     @Column(
             nullable = false
     )
@@ -67,4 +65,5 @@ public class Book {
             referencedColumnName = "authorId"
     )
     private AuthorProfile authorProfile;
+
 }

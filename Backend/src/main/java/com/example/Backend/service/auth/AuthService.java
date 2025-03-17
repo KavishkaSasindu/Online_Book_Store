@@ -103,6 +103,7 @@ public class AuthService {
                     .authenticate(new UsernamePasswordAuthenticationToken(logInRequest.getEmail(), logInRequest.getPassword()));
             if(authentication.isAuthenticated()) {
                 Map<String, Object> claims = new HashMap<>();
+                claims.put("role", existUser.getRole());
                 String token = jwtService.generateToken(claims,existUser);
                 return new LogInResponseDto(
                   logInRequest.getEmail(),

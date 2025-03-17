@@ -46,6 +46,7 @@ public class JwtService {
                 .getPayload();
     }
 
+
 //    extract one claim
     public <T> T getSOneClaim(String token, Function<Claims, T> claimsResolver) {
         Claims claims = extractAllClaims(token);
@@ -55,6 +56,12 @@ public class JwtService {
 //    get subject from one claim
     public String getUsernameFromToken(String token) {
         return getSOneClaim(token, Claims::getSubject);
+    }
+
+//    get role claim
+    public String getRoleClaim(String token) {
+        Claims claims = extractAllClaims(token);
+        return claims.get("role", String.class);
     }
 
 //    check is valid

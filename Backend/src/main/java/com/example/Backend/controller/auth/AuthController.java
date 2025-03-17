@@ -71,6 +71,11 @@ public class AuthController {
     @PostMapping("/author-register")
     public ResponseEntity<?> registerAuthor(@RequestPart AuthorProfile authorProfile,@RequestPart(required = false) MultipartFile image) throws IOException {
         try{
+            if(authorProfile.getUserProfile().getEmail().isBlank()){
+                return ResponseEntity
+                        .status(HttpStatus.BAD_REQUEST)
+                        .body(new ResponseMessageDto("user email is blank"));
+            }
             AuthorProfile returnValue = authService.registerAuthor(authorProfile, image);
             if(returnValue != null) {
                 return ResponseEntity

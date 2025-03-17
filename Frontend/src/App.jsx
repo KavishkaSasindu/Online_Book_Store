@@ -7,6 +7,7 @@ import RegisterAuthor from "./pages/auth/RegisterAuthor.jsx";
 import Navbar from "./components/Navbar.jsx";
 import RegisterAbout from "./pages/RegisterAbout.jsx";
 import AllBooks from "./pages/AllBooks.jsx";
+import CreateBook from "./pages/author/CreateBook.jsx";
 
 const App = () => {
   return (
@@ -20,6 +21,9 @@ const App = () => {
           <Route path={"/auth/register-about"} element={<RegisterAbout />} />
           <Route path={"/auth/register/user"} element={<RegisterUser />} />
           <Route path={"/auth/register/author"} element={<RegisterAuthor />} />
+
+          {/* author routes */}
+          <Route path="/author/add-book" element={<CreateBook />} />
         </Routes>
       </BrowserRouter>
     </div>
