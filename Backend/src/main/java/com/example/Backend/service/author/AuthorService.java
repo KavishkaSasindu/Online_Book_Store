@@ -1,5 +1,7 @@
 package com.example.Backend.service.author;
 
+import com.example.Backend.dto.book.BookUpdateDto;
+import com.example.Backend.dto.commonDto.ResponseMessageDto;
 import com.example.Backend.model.AuthorProfile;
 import com.example.Backend.model.Book;
 import com.example.Backend.model.UserProfile;
@@ -11,8 +13,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.swing.text.html.Option;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 @Data
 @Service
@@ -107,5 +112,68 @@ public class AuthorService {
     }
 
 //    update a book by author
+    @Transactional
+    public Book updateBook(BookUpdateDto book, MultipartFile image, Long authorId, Long bookId) throws Exception {
+//        first check author is existed
+        AuthorProfile existingAuthor = checkAuthorExists(authorId);
+        if(existingAuthor == null) {
+            return null;
+        }
+
+//        then check book is existed
+        Optional<Book> existingBook = bookRepo.findById(bookId);
+        if(existingBook.isEmpty()){
+            return null;
+        }
+
+//        check book owned by requested author
+        if(!Objects.equals(existingBook.get().getAuthorProfile().getAuthorId(), authorId)){
+            throw new RuntimeException(String.valueOf(new ResponseMessageDto("Author not belongs to this book")));
+        }
+
+        existingBook.get().setBookName(book.getBookName());
+        existingBook.get().setDescription(book.getDescription());
+        existingBook.get().setPrice(book.getPrice());
+        existingBook.get().setCategory(book.getCategory());
+
+        if(image != null && !image.isEmpty()) {
+            existingBook.get().setImageName(image.getOriginalFilename());
+            existingBook.get().setImageType(image.getContentType());
+            existingBook.get().setImageData(image.getBytes());
+        }
+            existingBook.get().setImageName(existingBook.get().getImageName());
+            existingBook.get().setImageType(existingBook.get().getImageType());
+            existingBook.get().setImageData(existingBook.get().getImageData());
+
+
+        existingBook.get().setAuthorProfile(existingAuthor);
+        return bookRepo.save(existingBook.get());
+    }
+
+//    delete book for author
+    @Transactional
+    public Book deleteBook(Long authorId,Long bookId) throws Exception {
+
+//        find author exist
+        AuthorProfile existingAuthor = checkAuthorExists(authorId);
+        if(existingAuthor == null) {
+            throw new RuntimeException("Author not found");
+        }
+
+//        find book
+        Optional<Book> existingBook = bookRepo.findById(bookId);
+        if(existingBook.isEmpty()) {
+            throw new RuntimeException("Book not found");
+        }
+
+        Book book = existingBook.get();
+
+//        find author belongs that book
+        if(book.getAuthorProfile().getAuthorId() != existingAuthor.getAuthorId() ) {
+            throw new RuntimeException(String.valueOf(new ResponseMessageDto("Author not belongs to this book")));
+        }
+        bookRepo.delete(book);
+        return book;
+    }
 
 }

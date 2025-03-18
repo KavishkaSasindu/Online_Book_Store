@@ -32,14 +32,14 @@ public class PublicController {
     @GetMapping("/all-books")
     public ResponseEntity<?> returnAllBooks() {
         try{
-            List<Book> allReturnBooks = publicService.getBooks();
-            if (allReturnBooks == null) {
+            List<Book> returnBook = publicService.getBooks();
+            if (returnBook == null) {
                 return ResponseEntity
                         .status(HttpStatus.NOT_FOUND)
                         .body(new ResponseMessageDto("No Books Found"));
             }
 
-            List<BookResponse> bookResponse = allReturnBooks.stream()
+            List<BookResponse> bookResponse = returnBook.stream()
                     .map(book->new BookResponse(
                             book.getBookId(),
                             book.getBookName(),

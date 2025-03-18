@@ -3,6 +3,7 @@ package com.example.Backend.controller.author;
 import com.example.Backend.dto.author.AuthorProfileResponse;
 import com.example.Backend.dto.author.RegisterAuthorResponseDto;
 import com.example.Backend.dto.book.BookResponse;
+import com.example.Backend.dto.book.BookUpdateDto;
 import com.example.Backend.dto.commonDto.ResponseMessageDto;
 import com.example.Backend.model.AuthorProfile;
 import com.example.Backend.model.Book;
@@ -129,5 +130,53 @@ public class AuthorController {
     }
 
 //    update book by author
+    @PutMapping("/update-book/{authorId}/{bookId}")
+    public ResponseEntity<?> updateBookByAuthor(@PathVariable Long authorId,
+                                                @PathVariable Long bookId,
+                                                @RequestPart(required = false) MultipartFile image,
+                                                @RequestPart BookUpdateDto bookUpdateDto) {
+        try{
+            Book returnValue = authorService.updateBook(bookUpdateDto,image,authorId,bookId);
+            if(returnValue != null) {
+                return ResponseEntity
+                        .status(HttpStatus.OK)
+                        .body(new BookResponse(
+                                returnValue.getBookId(),
+                                returnValue.getBookName(),
+                                returnValue.getDescription(),
+                                returnValue.getImageName(),
+                                returnValue.getPrice(),
+                                returnValue.getImageData(),
+                                returnValue.getAuthorProfile().getAuthorName()
+                        ));
+            }
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body(new ResponseMessageDto("No Book Found"));
+        } catch (Exception e) {
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ResponseMessageDto(e.getMessage()));
+        }
+    }
 
+//    delete book by author id
+    @DeleteMapping("/delete-book/{authorId}/{bookId}")
+    public ResponseEntity<?> deleteBookByAuthor(@PathVariable Long authorId,@PathVariable Long bookId) {
+        try{
+            Book returnValue = authorService.deleteBook(authorId,bookId);
+            if(returnValue != null) {
+                return ResponseEntity
+                        .status(HttpStatus.OK)
+                        .body(new ResponseMessageDto(returnValue.getBookName()+" is Deleted"));
+            }
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body(new ResponseMessageDto("error occurred"));
+        } catch (Exception e) {
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ResponseMessageDto(e.getMessage()));
+        }
+    }
 }
