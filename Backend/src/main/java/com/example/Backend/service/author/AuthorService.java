@@ -169,7 +169,7 @@ public class AuthorService {
         Book book = existingBook.get();
 
 //        find author belongs that book
-        if(book.getAuthorProfile().getAuthorId() != existingAuthor.getAuthorId() ) {
+        if(!Objects.equals(book.getAuthorProfile().getAuthorId(), existingAuthor.getAuthorId())) {
             throw new RuntimeException(String.valueOf(new ResponseMessageDto("Author not belongs to this book")));
         }
         bookRepo.delete(book);
