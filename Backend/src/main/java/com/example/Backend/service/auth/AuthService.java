@@ -55,7 +55,7 @@ public class AuthService {
         }
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
         user.setAuthorProfile(user.getAuthorProfile());
-        user.setRole(Role.USER);
+        user.setRole(Role.ADMIN);
         if(image!=null){
             user.setImageName(image.getOriginalFilename());
             user.setImageType(image.getContentType());
