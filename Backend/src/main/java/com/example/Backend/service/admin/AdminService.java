@@ -13,4 +13,6 @@ public class AdminService {
     public ResponseMessageDto testAdminService() {
         return new ResponseMessageDto("Admin Service test");
     }
+
+//    
 }

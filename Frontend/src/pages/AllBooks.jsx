@@ -171,13 +171,13 @@ const AllBooks = () => {
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
             {books.map((book, index) => (
               <div
-                key={book.bookId}
-                className="bg-white rounded-lg overflow-hidden shadow-md hover:shadow-xl transition-shadow duration-300"
+                key={index}
+                className="bg-white rounded-lg overflow-hidden shadow-md hover:shadow-xl transition-shadow duration-300 "
               >
                 <img
                   src={book.imageData}
-                  alt={book.bookName}
-                  className="w-full h-64 object-cover"
+                  alt={"imageName"}
+                  className="w-full h-48 object-cover "
                 />
                 <div className="p-4 bg-[#EBE5C2]">
                   <h3 className="font-bold text-[#504B38] text-lg mb-1 truncate">
@@ -199,7 +199,7 @@ const AllBooks = () => {
                   </div>
                   <div className="flex justify-between items-center mt-2">
                     <span className="font-bold text-[#504B38]">
-                      ${book.price.toFixed(2)}
+                      ${book.price}
                     </span>
                     <button className="bg-[#504B38] hover:bg-[#3A3728] text-white px-3 py-1 rounded-md text-sm transition-colors duration-300">
                       Add to Cart

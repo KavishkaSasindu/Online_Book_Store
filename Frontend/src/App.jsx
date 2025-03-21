@@ -8,6 +8,8 @@ import Navbar from "./components/Navbar.jsx";
 import RegisterAbout from "./pages/RegisterAbout.jsx";
 import AllBooks from "./pages/AllBooks.jsx";
 import CreateBook from "./pages/author/CreateBook.jsx";
+import UserProfile from "./pages/user/UserProfile.jsx";
+import UpdateUserProfile from "./pages/user/UpdateUserProfile.jsx";
 
 const App = () => {
   return (
@@ -21,6 +23,11 @@ const App = () => {
           <Route path={"/auth/register-about"} element={<RegisterAbout />} />
           <Route path={"/auth/register/user"} element={<RegisterUser />} />
           <Route path={"/auth/register/author"} element={<RegisterAuthor />} />
+          <Route path={"/user/user-profile"} element={<UserProfile />} />
+          <Route
+            path={"/user/update-profile"}
+            element={<UpdateUserProfile />}
+          />
 
           {/* author routes */}
           <Route path="/author/add-book" element={<CreateBook />} />
