@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { ArrowLeftIcon, SaveIcon, CameraIcon, XIcon } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const UpdateUserProfile = () => {
   // Sample user data based on your JSON
@@ -323,14 +324,16 @@ const UpdateUserProfile = () => {
 
           {/* Action Buttons */}
           <div className="flex justify-between">
-            <button
-              type="button"
-              className="px-6 py-3 bg-gray-200 text-gray-700 rounded-md font-medium flex items-center"
-              onClick={() => console.log("Cancel")}
-            >
-              <XIcon size={18} className="mr-2" />
-              Cancel
-            </button>
+            <Link to={"/user/user-profile"}>
+              <button
+                type="button"
+                className="px-6 py-3 bg-gray-200 text-gray-700 rounded-md font-medium flex items-center"
+                onClick={() => console.log("Cancel")}
+              >
+                <XIcon size={18} className="mr-2" />
+                Cancel
+              </button>
+            </Link>
             <button
               type="submit"
               className="px-6 py-3 bg-[#504B38] text-white rounded-md font-medium flex items-center"

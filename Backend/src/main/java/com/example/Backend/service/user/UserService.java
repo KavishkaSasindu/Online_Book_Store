@@ -37,6 +37,15 @@ public class UserService {
         return userProfile.get();
     }
 
+//    get one user image
+    public byte[] userImage(Long userId) {
+        Optional<UserProfile> userProfile = userRepo.findById(userId);
+        if(userProfile.isEmpty()) {
+            throw new RuntimeException("User not found");
+        }
+        return userProfile.get().getImageData();
+    }
+
 //    update user profile
     @Transactional
     public UserProfile updateUserProfile(Long userId, UserProfile userProfile, MultipartFile image) throws IOException {

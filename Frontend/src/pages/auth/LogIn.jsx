@@ -5,6 +5,7 @@ import { useNavigate, Link } from "react-router-dom";
 
 const SignIn = () => {
   const navigate = useNavigate();
+
   const [isLoading, setIsLoading] = useState(false);
 
   const [logInRequest, setLogInRequest] = useState({
@@ -68,6 +69,7 @@ const SignIn = () => {
 
       if (response.status === 200) {
         localStorage.setItem("token", data.token);
+        window.dispatchEvent(new Event("storage"));
         localStorage.setItem("email", data.logInEmail);
         localStorage.setItem("firstname", data.firstname);
         navigate("/");

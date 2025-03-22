@@ -72,4 +72,23 @@ public class UserController {
         }
     }
 
+//    get user image
+    @GetMapping("/profile-image/{userId}")
+    public ResponseEntity<?> userImage(@PathVariable Long userId) {
+        try{
+            byte[] imageData = userService.userImage(userId);
+            if(imageData == null) {
+                return ResponseEntity
+                        .status(HttpStatus.NOT_FOUND)
+                        .body(new ResponseMessageDto("image not found"));
+            }
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body(imageData);
+        } catch (Exception e) {
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ResponseMessageDto(e.getMessage()));
+        }
+    }
 }

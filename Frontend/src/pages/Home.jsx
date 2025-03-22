@@ -2,7 +2,6 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { useRef } from "react";
 
 const Home = () => {
   const [books, setBooks] = useState([]);
@@ -370,7 +369,7 @@ const Home = () => {
       <section className="py-12 bg-gray-50">
         <div className="container mx-auto px-6">
           <div className="flex flex-col items-center">
-            <h3 className="text-2xl font-serif font-medium text-[#504B38] mb-6">
+            <h3 className="text-2xl  font-medium text-[#504B38] mb-6">
               Connect With Us
             </h3>
             <div className="flex space-x-6 mb-8">

@@ -55,7 +55,7 @@ public class AuthService {
         }
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
         user.setAuthorProfile(user.getAuthorProfile());
-        user.setRole(Role.ADMIN);
+        user.setRole(Role.USER);
         if(image!=null){
             user.setImageName(image.getOriginalFilename());
             user.setImageType(image.getContentType());
@@ -104,6 +104,11 @@ public class AuthService {
             if(authentication.isAuthenticated()) {
                 Map<String, Object> claims = new HashMap<>();
                 claims.put("role", existUser.getRole());
+                claims.put("userId",existUser.getUserId());
+                if(existUser.getAuthorProfile()!=null){
+                    claims.put("authorId",existUser.getAuthorProfile().getAuthorId());
+                }
+                claims.put("email",existUser.getEmail());
                 String token = jwtService.generateToken(claims,existUser);
                 return new LogInResponseDto(
                   logInRequest.getEmail(),
