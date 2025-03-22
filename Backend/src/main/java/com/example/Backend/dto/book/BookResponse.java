@@ -14,4 +14,5 @@ public class BookResponse {
     private Double price;
     private byte[] imageData;
     private String author;
+    private String category;
 }

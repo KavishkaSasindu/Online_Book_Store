@@ -47,7 +47,8 @@ public class PublicController {
                             book.getImageName(),
                             book.getPrice(),
                             book.getImageData(),
-                            book.getAuthorProfile().getAuthorName()
+                            book.getAuthorProfile().getAuthorName(),
+                            book.getCategory()
                     )).toList();
 
             return ResponseEntity
@@ -78,7 +79,8 @@ public class PublicController {
                         book.getImageName(),
                         book.getPrice(),
                         book.getImageData(),
-                        book.getAuthorProfile().getAuthorName()
+                        book.getAuthorProfile().getAuthorName(),
+                        book.getCategory()
                 )
             ).toList();
             return ResponseEntity
@@ -129,7 +131,8 @@ public class PublicController {
                             book.getImageName(),
                             book.getPrice(),
                             book.getImageData(),
-                            book.getAuthorProfile().getAuthorName()
+                            book.getAuthorProfile().getAuthorName(),
+                            book.getCategory()
                     ))
                     .toList();
 

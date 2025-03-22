@@ -150,13 +150,7 @@ const UserNavbar = () => {
                   <User className="h-4 w-4 mr-2" />
                   My Profile
                 </Link>
-                <Link
-                  to="/reading-history"
-                  className="block px-4 py-2 text-[#504B38] hover:bg-[#EBE5C2] transition-colors  items-center"
-                >
-                  <BookMarked className="h-4 w-4 mr-2" />
-                  Reading History
-                </Link>
+
                 <button
                   onClick={logOut}
                   className="block w-full text-left px-4 py-2 text-[#504B38] hover:bg-[#EBE5C2] transition-colors  items-center"
@@ -262,17 +256,6 @@ const UserNavbar = () => {
             onClick={() => setMobileMenuOpen(false)}
           >
             My Profile
-          </Link>
-          <Link
-            to="/reading-history"
-            className={`block text-[#504B38] font-medium py-2 rounded-md px-3 ${
-              isActive("/reading-history")
-                ? "bg-[#504B38]/20 text-[#3A3728]"
-                : "hover:bg-[#504B38]/10 hover:text-[#3A3728]"
-            }`}
-            onClick={() => setMobileMenuOpen(false)}
-          >
-            Reading History
           </Link>
 
           <div className="pt-2 border-t border-[#504B38]/20">

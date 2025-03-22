@@ -147,7 +147,8 @@ public class AuthorController {
                                 returnValue.getImageName(),
                                 returnValue.getPrice(),
                                 returnValue.getImageData(),
-                                returnValue.getAuthorProfile().getAuthorName()
+                                returnValue.getAuthorProfile().getAuthorName(),
+                                returnValue.getCategory()
                         ));
             }
             return ResponseEntity

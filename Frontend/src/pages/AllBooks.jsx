@@ -5,7 +5,7 @@ import axios from "axios";
 
 const AllBooks = () => {
   const [books, setBooks] = useState([]);
-
+  const [filteredBooks, setFilteredBooks] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -49,10 +49,44 @@ const AllBooks = () => {
       );
 
       setBooks(bookWithImage);
+      setFilteredBooks(bookWithImage);
       console.log(books);
     } catch (error) {
       console.log(error.message);
     }
+  };
+
+  // Filter books based on category and search query
+  useEffect(() => {
+    let result = [...books];
+
+    // Filter by category
+    if (selectedCategory !== "All") {
+      result = result.filter((book) => book.category === selectedCategory);
+    }
+
+    // Filter by search query
+    if (searchQuery.trim() !== "") {
+      const query = searchQuery.toLowerCase();
+      result = result.filter(
+        (book) =>
+          book.bookName?.toLowerCase().includes(query) ||
+          book.author?.toLowerCase().includes(query) ||
+          book.description?.toLowerCase().includes(query)
+      );
+    }
+
+    setFilteredBooks(result);
+  }, [selectedCategory, searchQuery, books]);
+
+  // Handle search input change
+  const handleSearchChange = (e) => {
+    setSearchQuery(e.target.value);
+  };
+
+  // Handle category selection
+  const handleCategoryChange = (category) => {
+    setSelectedCategory(category);
   };
 
   // Render stars for ratings
@@ -106,6 +140,8 @@ const AllBooks = () => {
                   type="text"
                   placeholder="Search by title, author or keyword..."
                   className="w-full px-4 py-3 border bg-white border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#504B38]"
+                  value={searchQuery}
+                  onChange={handleSearchChange}
                 />
                 <button className="absolute right-3 top-3 text-gray-500">
                   <svg
@@ -168,47 +204,59 @@ const AllBooks = () => {
       {/* Books Grid */}
       <section className="py-8 px-6">
         <div className="container mx-auto">
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
-            {books.map((book, index) => (
-              <div
-                key={index}
-                className="bg-white rounded-lg overflow-hidden shadow-md hover:shadow-xl transition-shadow duration-300 "
-              >
-                <img
-                  src={book.imageData}
-                  alt={"imageName"}
-                  className="w-full h-48 object-cover "
-                />
-                <div className="p-4 bg-[#EBE5C2]">
-                  <h3 className="font-bold text-[#504B38] text-lg mb-1 truncate">
-                    {book.bookName}
-                  </h3>
-                  <p className="text-sm font-medium text-gray-700 mb-1">
-                    {book.author}
-                  </p>
-                  <p className="text-sm text-gray-600 mb-2 line-clamp-2">
-                    {book.description
-                      ? `${book.description.substring(0, 60)}...`
-                      : "No description available..."}
-                  </p>
-                  <div className="flex items-center mb-2">
-                    {renderStars(book.rating)}
-                    <span className="ml-1 text-sm text-gray-600">
-                      ({book.rating})
-                    </span>
-                  </div>
-                  <div className="flex justify-between items-center mt-2">
-                    <span className="font-bold text-[#504B38]">
-                      ${book.price}
-                    </span>
-                    <button className="bg-[#504B38] hover:bg-[#3A3728] text-white px-3 py-1 rounded-md text-sm transition-colors duration-300">
-                      Add to Cart
-                    </button>
+          {filteredBooks.length === 0 ? (
+            <div className="text-center py-8">
+              <p className="text-lg text-gray-600">
+                No books found matching your criteria.
+              </p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+              {filteredBooks.map((book, index) => (
+                <div
+                  key={index}
+                  className="bg-white rounded-lg overflow-hidden shadow-md hover:shadow-xl transition-shadow duration-300 "
+                >
+                  <img
+                    src={book.imageData}
+                    alt={book.bookName}
+                    className="w-full h-48 object-cover "
+                  />
+                  <div className="p-4 bg-[#EBE5C2]">
+                    <h3 className="font-bold text-[#504B38] text-lg mb-1 truncate">
+                      {book.bookName}
+                    </h3>
+                    <p className="text-sm font-medium text-gray-700 mb-1">
+                      {book.author}
+                    </p>
+                    <p className="text-sm mb-1 text-red-950 font-extrabold">
+                      <span className="text-red-900 font-bold">Category</span> :{" "}
+                      {book.category}
+                    </p>
+                    <p className="text-sm text-gray-600 mb-2 line-clamp-2">
+                      {book.description
+                        ? `${book.description.substring(0, 60)}...`
+                        : "No description available..."}
+                    </p>
+                    <div className="flex items-center mb-2">
+                      {renderStars(book.rating)}
+                      <span className="ml-1 text-sm text-gray-600">
+                        ({book.rating})
+                      </span>
+                    </div>
+                    <div className="flex justify-between items-center mt-2">
+                      <span className="font-bold text-[#504B38]">
+                        ${book.price}
+                      </span>
+                      <button className="bg-[#504B38] hover:bg-[#3A3728] text-white px-3 py-1 rounded-md text-sm transition-colors duration-300">
+                        Add to Cart
+                      </button>
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
         </div>
       </section>
 

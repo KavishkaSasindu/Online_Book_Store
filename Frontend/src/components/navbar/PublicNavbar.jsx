@@ -45,12 +45,6 @@ const PublicNavbar = () => {
               Books
             </Link>
             <Link
-              to="/categories"
-              className="text-[#504B38] font-medium hover:text-[#3A3728] transition-colors px-3 py-2 rounded-md hover:bg-[#504B38]/10"
-            >
-              Categories
-            </Link>
-            <Link
               to="/authors"
               className="text-[#504B38] font-medium hover:text-[#3A3728] transition-colors px-3 py-2 rounded-md hover:bg-[#504B38]/10"
             >
