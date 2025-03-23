@@ -99,7 +99,7 @@ const UserNavbar = () => {
               Authors
             </Link>
             <Link
-              to="/wishlist"
+              to={`/user/user-wishlist/${userId}`}
               className={`px-3 py-2 rounded-md text-[#504B38] font-medium transition-colors ${
                 isActive("/wishlist")
                   ? "bg-[#504B38]/20 text-[#3A3728]"

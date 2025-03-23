@@ -86,7 +86,7 @@ const SignIn = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col md:flex-row">
+    <div className="min-h-screen flex flex-col md:flex-row mt-10">
       {/* Left side - Image and branding */}
       <div className="hidden md:flex md:w-1/2 bg-gray-200">
         <div className="w-full flex flex-col justify-center items-center p-12">
@@ -96,9 +96,6 @@ const SignIn = () => {
             transition={{ duration: 0.5 }}
             className="mb-8"
           >
-            <h1 className="text-4xl md:text-5xl font-bold text-black mb-4">
-              Book Haven
-            </h1>
             <p className="text-black text-xl">
               Your literary journey begins here
             </p>

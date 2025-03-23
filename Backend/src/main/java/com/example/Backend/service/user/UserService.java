@@ -1,7 +1,9 @@
 package com.example.Backend.service.user;
 
 import com.example.Backend.dto.commonDto.ResponseMessageDto;
+import com.example.Backend.model.Book;
 import com.example.Backend.model.UserProfile;
+import com.example.Backend.repo.BookRepo;
 import com.example.Backend.repo.UserRepo;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
@@ -12,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Optional;
 
 @Data
@@ -20,10 +23,12 @@ import java.util.Optional;
 public class UserService {
 
     private UserRepo userRepo;
+    private BookRepo bookRepo;
 
     @Autowired
-    public UserService(UserRepo userRepo) {
+    public UserService(UserRepo userRepo, BookRepo bookRepo) {
         this.userRepo = userRepo;
+        this.bookRepo = bookRepo;
     }
 
 //    get user details by user id
@@ -88,5 +93,44 @@ public class UserService {
         existUserProfile.setAuthorProfile(existUserProfile.getAuthorProfile());
 
         return existUser.get();
+    }
+
+//    add book to wishlist
+    public String addBookToWishlist(Long userId, Long bookId) {
+
+//        find user exist in db
+        Optional<UserProfile> userProfile = userRepo.findById(userId);
+        if(userProfile.isEmpty()) {
+            throw new RuntimeException("User not found");
+        }
+        UserProfile userProfile1 = userProfile.get();
+
+//        then find book is present
+        Optional<Book> existBook = bookRepo.findById(bookId);
+        if(existBook.isEmpty()) {
+            throw new RuntimeException("Book not found");
+        }
+        Book book = existBook.get();
+
+        if(userProfile1.getWishListBooks().contains(book)) {
+            throw new RuntimeException("Wishlist already exists");
+        }
+        userProfile1.getWishListBooks().add(book);
+        userRepo.save(userProfile1);
+        return "Added book to wishlist";
+    }
+
+//    get all books in wishlist
+    public List<Book>  getAllBooksFromWishlist(Long userId) {
+        Optional<UserProfile> userProfile = userRepo.findById(userId);
+        if(userProfile.isEmpty()) {
+            throw new RuntimeException("User not found");
+        }
+        UserProfile userProfile1 = userProfile.get();
+        List<Book> books = userProfile1.getWishListBooks();
+        if(books.isEmpty()) {
+            return null;
+        }
+        return books;
     }
 }

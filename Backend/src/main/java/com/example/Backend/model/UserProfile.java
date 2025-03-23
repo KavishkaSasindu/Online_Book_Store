@@ -75,6 +75,18 @@ public class UserProfile implements UserDetails {
     )
     private AuthorProfile authorProfile;
 
+    @ManyToMany
+    @JoinTable(
+            name = "wishlist",
+            joinColumns = @JoinColumn(
+                    name = "user_id"
+            ),
+            inverseJoinColumns = @JoinColumn(
+                    name = "book_id"
+            )
+    )
+    private List<Book> wishListBooks;
+
     @PrePersist
     public void onCreate() {
         profileCreatedAt = LocalDateTime.now();

@@ -1,11 +1,48 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useContext } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import axios from "axios";
+import { AuthContext } from "./auth/AuthProvider";
+import { header } from "framer-motion/client";
 
 const Home = () => {
   const [books, setBooks] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+
+  const navigate = useNavigate();
+
+  const { user } = useContext(AuthContext);
+  console.log("userId " + user?.userId);
+
+  const token = localStorage.getItem("token");
+
+  const addToWhishList = async (bookId) => {
+    if (!token) {
+      navigate("/auth/login");
+    }
+
+    try {
+      const response = await axios.post(
+        `http://localhost:8080/user/add-wishlist/${user?.userId}/${bookId}`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      const data = await response.data;
+      console.log(data);
+    } catch (error) {
+      if (token) {
+        alert(error.response.data.message);
+      }
+      navigate("/auth/login");
+    }
+
+    console.log("add to whishlist logic here");
+  };
 
   const fetchBooks = async () => {
     setIsLoading(true);
@@ -89,7 +126,7 @@ const Home = () => {
           {/* left hand side */}
           <div className="w-[55%]  flex justify-items-start items-center h-full">
             <div className="h-[78]">
-              <h1 className="text-3xl md:text-5xl font-bold mb-6 text-[#504B38]">
+              <h1 className="animate-pulse text-3xl md:text-5xl font-bold mb-6 text-[#504B38]">
                 Discover Your Next Great Read
                 <span className="block text-xl mt-2 text-[#B9B28A]">
                   Literary Adventures Await
@@ -248,8 +285,14 @@ const Home = () => {
                       <span className="font-bold text-[#504B38]">
                         ${book.price}
                       </span>
-                      <button className="bg-[#504B38] hover:bg-[#3A3728] text-white px-3 py-1 rounded-md text-sm transition-colors duration-300">
-                        Add to Cart
+                      <button
+                        onClick={() => {
+                          console.log("bookId " + book.bookId);
+                          addToWhishList(book.bookId);
+                        }}
+                        className="bg-[#504B38] hover:bg-[#3A3728] text-white px-3 py-1 rounded-md text-sm transition-colors duration-300"
+                      >
+                        Whishlist +
                       </button>
                     </div>
                   </div>

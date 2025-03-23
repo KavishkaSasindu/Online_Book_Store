@@ -1,7 +1,8 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useContext } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import axios from "axios";
+import { AuthContext } from "./auth/AuthProvider";
 
 const AllBooks = () => {
   const [books, setBooks] = useState([]);
@@ -9,7 +10,20 @@ const AllBooks = () => {
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [searchQuery, setSearchQuery] = useState("");
 
-  // Dummy categories
+  const navigate = useNavigate();
+
+  const token = localStorage.getItem("token");
+
+  const { user } = useContext(AuthContext);
+
+  const addToWhishList = async () => {
+    if (!token) {
+      navigate("/auth/login");
+    }
+
+    console.log("add to whishlist logic here");
+  };
+
   const categories = [
     "All",
     "FICTION",
@@ -248,8 +262,11 @@ const AllBooks = () => {
                       <span className="font-bold text-[#504B38]">
                         ${book.price}
                       </span>
-                      <button className="bg-[#504B38] hover:bg-[#3A3728] text-white px-3 py-1 rounded-md text-sm transition-colors duration-300">
-                        Add to Cart
+                      <button
+                        onClick={addToWhishList}
+                        className="bg-[#504B38] hover:bg-[#3A3728] text-white px-3 py-1 rounded-md text-sm transition-colors duration-300"
+                      >
+                        Whishlist +
                       </button>
                     </div>
                   </div>

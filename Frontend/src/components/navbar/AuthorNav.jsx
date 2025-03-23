@@ -118,7 +118,7 @@ const AuthorNavbar = () => {
               Books
             </Link>
             <Link
-              to="/add-book"
+              to="/author/add-book"
               className={`px-3 py-2 rounded-md text-[#504B38] font-medium transition-colors ${
                 isActive("/add-book")
                   ? "bg-[#504B38]/20 text-[#3A3728]"
@@ -151,74 +151,6 @@ const AuthorNavbar = () => {
 
           {/* Author Profile */}
           <div className="hidden md:flex items-center space-x-2">
-            {/* Notifications */}
-            <div className="relative" ref={notificationsRef}>
-              <button
-                onClick={() => {
-                  setNotificationsOpen(!notificationsOpen);
-                  setProfileMenuOpen(false);
-                }}
-                className="p-2 text-[#504B38] hover:text-[#3A3728] hover:bg-[#504B38]/10 rounded-full relative"
-              >
-                <Bell className="h-6 w-6" />
-                <span className="absolute top-1 right-1 bg-red-500 text-white text-xs w-4 h-4 flex items-center justify-center rounded-full">
-                  {notifications.filter((n) => !n.read).length}
-                </span>
-              </button>
-
-              {/* Notifications Dropdown */}
-              <div
-                className={`absolute right-0 mt-2 w-80 bg-white rounded-md shadow-lg py-1 transition-all duration-200 ${
-                  notificationsOpen
-                    ? "opacity-100 scale-100"
-                    : "opacity-0 scale-95 pointer-events-none"
-                }`}
-              >
-                <div className="px-4 py-2 border-b border-gray-100 flex justify-between items-center">
-                  <h3 className="font-medium text-[#3A3728]">Notifications</h3>
-                  <button className="text-sm text-[#504B38] hover:text-[#3A3728]">
-                    Mark all as read
-                  </button>
-                </div>
-                <div className="max-h-60 overflow-y-auto">
-                  {notifications.map((notification) => (
-                    <div
-                      key={notification.id}
-                      className={`px-4 py-2 hover:bg-[#EBE5C2] border-l-2 ${
-                        notification.read
-                          ? "border-transparent"
-                          : "border-[#504B38]"
-                      }`}
-                    >
-                      <div className="flex justify-between">
-                        <p
-                          className={`text-sm ${
-                            notification.read
-                              ? "text-gray-600"
-                              : "font-medium text-[#3A3728]"
-                          }`}
-                        >
-                          {notification.message}
-                        </p>
-                      </div>
-                      <p className="text-xs text-gray-500 mt-1">
-                        {notification.time}
-                      </p>
-                    </div>
-                  ))}
-                </div>
-                <div className="border-t border-gray-100 px-4 py-2">
-                  <Link
-                    to="/notifications"
-                    className="text-sm text-[#504B38] hover:text-[#3A3728] block text-center"
-                    onClick={() => setNotificationsOpen(false)}
-                  >
-                    View all notifications
-                  </Link>
-                </div>
-              </div>
-            </div>
-
             {/* User Menu */}
             <div className="relative" ref={profileMenuRef}>
               <button
@@ -259,7 +191,7 @@ const AuthorNavbar = () => {
                   Dashboard
                 </Link>
                 <Link
-                  to="/add-book"
+                  to="/author/add-book"
                   className="block px-4 py-2 text-[#504B38] hover:bg-[#EBE5C2] transition-colors  items-center"
                 >
                   <PlusCircle className="h-4 w-4 mr-2" />

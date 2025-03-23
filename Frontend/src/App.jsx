@@ -15,6 +15,7 @@ import AdminUsers from "./pages/admin/AdminUsers.jsx";
 import Unauthorized from "./pages/auth/Unauthorized.jsx";
 import About from "./pages/About.jsx";
 import Authors from "./pages/Authors.jsx";
+import Wishlist from "./pages/user/Wishlist.jsx";
 
 const App = () => {
   return (
@@ -33,10 +34,10 @@ const App = () => {
           <Route path={"/auth/register-about"} element={<RegisterAbout />} />
           <Route path={"/auth/register/user"} element={<RegisterUser />} />
           <Route path={"/auth/register/author"} element={<RegisterAuthor />} />
-          <Route path={"**"} element={<Unauthorized />} />
 
           {/* user routes */}
           <Route path={"/user/user-profile/:id"} element={<UserProfile />} />
+          <Route path={"/user/user-wishlist/:id"} element={<Wishlist />} />
           <Route
             path={"/user/update-profile/:id"}
             element={<UpdateUserProfile />}
