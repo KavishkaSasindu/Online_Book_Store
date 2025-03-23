@@ -1,8 +1,12 @@
 package com.example.Backend.controller.publicCon;
 
+import com.example.Backend.dto.author.AuthorProfileResponse;
 import com.example.Backend.dto.book.BookResponse;
 import com.example.Backend.dto.commonDto.ResponseMessageDto;
+import com.example.Backend.model.AuthorProfile;
 import com.example.Backend.model.Book;
+import com.example.Backend.repo.AuthorRepo;
+import com.example.Backend.service.author.AuthorService;
 import com.example.Backend.service.publicService.PublicService;
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,11 +25,15 @@ import java.util.List;
 @RequestMapping("/public")
 public class PublicController {
 
+    private final AuthorRepo authorRepo;
+    private final AuthorService authorService;
     private PublicService publicService;
 
     @Autowired
-    public PublicController(PublicService publicService) {
+    public PublicController(PublicService publicService, AuthorRepo authorRepo, AuthorService authorService) {
         this.publicService = publicService;
+        this.authorRepo = authorRepo;
+        this.authorService = authorService;
     }
 
 //    get all books for public visible
@@ -139,6 +147,37 @@ public class PublicController {
             return ResponseEntity
                     .status(HttpStatus.OK)
                     .body(responseBook);
+        } catch (Exception e) {
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ResponseMessageDto(e.getMessage()));
+        }
+    }
+
+
+//    get all authors
+    @GetMapping("/all-authors")
+    public ResponseEntity<?> getAuthors() {
+        try{
+            List<AuthorProfile> returnAuthors = publicService.getAllAuthors();
+            if (returnAuthors == null) {
+                return ResponseEntity
+                        .status(HttpStatus.NOT_FOUND)
+                        .body(new ResponseMessageDto("No Authors Found"));
+            }
+
+            List<AuthorProfileResponse> responseAuthors = returnAuthors.stream()
+                    .map(authors->new AuthorProfileResponse(
+                            authors.getAuthorId(),
+                            authors.getAuthorName(),
+                            authors.getAuthorBio(),
+                            authors.getUserProfile(),
+                            authors.getBooks()
+                    )).toList();
+
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body(responseAuthors);
         } catch (Exception e) {
             return ResponseEntity
                     .status(HttpStatus.INTERNAL_SERVER_ERROR)

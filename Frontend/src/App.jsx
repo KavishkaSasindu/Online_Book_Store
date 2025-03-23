@@ -12,6 +12,9 @@ import UserProfile from "./pages/user/UserProfile.jsx";
 import UpdateUserProfile from "./pages/user/UpdateUserProfile.jsx";
 import AdminDashboard from "./pages/admin/AdminDashboard.jsx";
 import AdminUsers from "./pages/admin/AdminUsers.jsx";
+import Unauthorized from "./pages/auth/Unauthorized.jsx";
+import About from "./pages/About.jsx";
+import Authors from "./pages/Authors.jsx";
 
 const App = () => {
   return (
@@ -19,12 +22,20 @@ const App = () => {
       <BrowserRouter>
         <Navbar />
         <Routes>
+          {/* public routes */}
           <Route path={"/"} element={<Home />} />
           <Route path={"/all-books"} element={<AllBooks />} />
+          <Route path={"/about"} element={<About />} />
+          <Route path={"/authors"} element={<Authors />} />
+
+          {/* authentication routes */}
           <Route path={"/auth/login"} element={<LogIn />} />
           <Route path={"/auth/register-about"} element={<RegisterAbout />} />
           <Route path={"/auth/register/user"} element={<RegisterUser />} />
           <Route path={"/auth/register/author"} element={<RegisterAuthor />} />
+          <Route path={"**"} element={<Unauthorized />} />
+
+          {/* user routes */}
           <Route path={"/user/user-profile/:id"} element={<UserProfile />} />
           <Route
             path={"/user/update-profile/:id"}

@@ -1,6 +1,8 @@
 package com.example.Backend.service.publicService;
 
+import com.example.Backend.model.AuthorProfile;
 import com.example.Backend.model.Book;
+import com.example.Backend.repo.AuthorRepo;
 import com.example.Backend.repo.BookRepo;
 import lombok.Data;
 import org.springframework.stereotype.Service;
@@ -13,6 +15,7 @@ import java.util.List;
 public class PublicService {
 
     private final BookRepo bookRepo;
+    private final AuthorRepo authorRepo;
 
     //    get all books
     public List<Book> getBooks() {
@@ -45,5 +48,14 @@ public class PublicService {
             return null;
         }
         return findBooks;
+    }
+
+//    get all authors
+    public List<AuthorProfile> getAllAuthors() {
+        List<AuthorProfile> allAuthors = authorRepo.findAll();
+        if(allAuthors.isEmpty()) {
+            return null;
+        }
+        return allAuthors;
     }
 }

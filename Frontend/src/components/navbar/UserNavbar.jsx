@@ -89,24 +89,14 @@ const UserNavbar = () => {
               Books
             </Link>
             <Link
-              to="/my-books"
+              to="/authors"
               className={`px-3 py-2 rounded-md text-[#504B38] font-medium transition-colors ${
                 isActive("/my-books")
                   ? "bg-[#504B38]/20 text-[#3A3728]"
                   : "hover:bg-[#504B38]/10 hover:text-[#3A3728]"
               }`}
             >
-              My Books
-            </Link>
-            <Link
-              to="/borrowed-books"
-              className={`px-3 py-2 rounded-md text-[#504B38] font-medium transition-colors ${
-                isActive("/borrowed-books")
-                  ? "bg-[#504B38]/20 text-[#3A3728]"
-                  : "hover:bg-[#504B38]/10 hover:text-[#3A3728]"
-              }`}
-            >
-              Borrowed Books
+              Authors
             </Link>
             <Link
               to="/wishlist"

@@ -93,7 +93,8 @@ public class AuthorController {
                             returnAuthor.getAuthorId(),
                             returnAuthor.getAuthorName(),
                             returnAuthor.getAuthorBio(),
-                            returnAuthor.getUserProfile()
+                            returnAuthor.getUserProfile(),
+                            returnAuthor.getBooks()
                     ));
         } catch (Exception e) {
             return ResponseEntity
