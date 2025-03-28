@@ -105,6 +105,7 @@ public class AuthService {
                 Map<String, Object> claims = new HashMap<>();
                 claims.put("role", existUser.getRole());
                 claims.put("userId",existUser.getUserId());
+                claims.put("email",existUser.getEmail());
                 if(existUser.getAuthorProfile()!=null){
                     claims.put("authorId",existUser.getAuthorProfile().getAuthorId());
                 }

@@ -19,6 +19,8 @@ const Home = () => {
   const addToWhishList = async (bookId) => {
     if (!token) {
       navigate("/auth/login");
+      alert("You need to sign in");
+      return;
     }
 
     try {
@@ -32,13 +34,14 @@ const Home = () => {
         }
       );
 
+      if (response.status === 200) {
+        alert("Book added to wishlist successfully");
+      }
+
       const data = await response.data;
       console.log(data);
     } catch (error) {
-      if (token) {
-        alert(error.response.data.message);
-      }
-      navigate("/auth/login");
+      console.log(error.response.data.message);
     }
 
     console.log("add to whishlist logic here");
@@ -287,7 +290,6 @@ const Home = () => {
                       </span>
                       <button
                         onClick={() => {
-                          console.log("bookId " + book.bookId);
                           addToWhishList(book.bookId);
                         }}
                         className="bg-[#504B38] hover:bg-[#3A3728] text-white px-3 py-1 rounded-md text-sm transition-colors duration-300"

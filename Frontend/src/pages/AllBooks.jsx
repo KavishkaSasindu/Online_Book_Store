@@ -13,15 +13,33 @@ const AllBooks = () => {
   const navigate = useNavigate();
 
   const token = localStorage.getItem("token");
-
   const { user } = useContext(AuthContext);
+  const userId = user?.userId;
 
-  const addToWhishList = async () => {
-    if (!token) {
-      navigate("/auth/login");
+  const addToWhishList = async (bookId) => {
+    try {
+      if (!token) {
+        navigate("/auth/login");
+      }
+      const response = await axios.post(
+        `http://localhost:8080/user/add-wishlist/${userId}/${bookId}`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      const data = response.data;
+
+      if (response.status === 200) {
+        alert("Book added to wishlist successfully");
+      }
+      console.log(data);
+    } catch (error) {
+      alert(error.response.data.message);
     }
-
-    console.log("add to whishlist logic here");
   };
 
   const categories = [
@@ -263,7 +281,7 @@ const AllBooks = () => {
                         ${book.price}
                       </span>
                       <button
-                        onClick={addToWhishList}
+                        onClick={() => addToWhishList(book.bookId)}
                         className="bg-[#504B38] hover:bg-[#3A3728] text-white px-3 py-1 rounded-md text-sm transition-colors duration-300"
                       >
                         Whishlist +

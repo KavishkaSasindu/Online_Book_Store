@@ -10,6 +10,7 @@ import {
   BookMarked,
 } from "lucide-react";
 import { AuthContext } from "../../pages/auth/AuthProvider";
+import axios from "axios";
 
 const UserNavbar = () => {
   const navigate = useNavigate();
@@ -23,7 +24,6 @@ const UserNavbar = () => {
   const { user } = useContext(AuthContext);
 
   const userId = user?.userId;
-
   useEffect(() => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 10);
@@ -215,7 +215,7 @@ const UserNavbar = () => {
             My Books
           </Link>
           <Link
-            to="/borrowed-books"
+            to="/authors"
             className={`block text-[#504B38] font-medium py-2 rounded-md px-3 ${
               isActive("/borrowed-books")
                 ? "bg-[#504B38]/20 text-[#3A3728]"
@@ -223,7 +223,7 @@ const UserNavbar = () => {
             }`}
             onClick={() => setMobileMenuOpen(false)}
           >
-            Borrowed Books
+            Authors
           </Link>
           <Link
             to="/wishlist"

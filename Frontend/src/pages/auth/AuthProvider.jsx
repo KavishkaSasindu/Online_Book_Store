@@ -15,6 +15,7 @@ export const AuthProvider = ({ children }) => {
           role: decode.role,
           userId: decode.userId,
           authorId: decode.authorId,
+          email: decode.email,
         });
       } else {
         setUser(null);

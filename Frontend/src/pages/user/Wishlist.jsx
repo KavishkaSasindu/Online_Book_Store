@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { AuthContext } from "../auth/AuthProvider";
 import axios from "axios";
 
@@ -7,7 +7,7 @@ const Wishlist = () => {
   // Sample data for demonstration
   const [wishlistItems, setWishlistItems] = useState([]);
 
-  const { user } = useContext(AuthContext);
+  const { id } = useParams();
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
 
@@ -15,13 +15,13 @@ const Wishlist = () => {
     navigate("/auth/login");
   }
 
-  const userId = user?.userId;
-  console.log(userId);
+  console.log(id);
 
+  //   fetchWishlist function
   const fetchWishlist = async () => {
     try {
       const responseBooks = await axios.get(
-        `http://localhost:8080/user/get-wishlist/${userId}`,
+        `http://localhost:8080/user/get-wishlist/${id}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -46,12 +46,29 @@ const Wishlist = () => {
       const data = await responseBooks.data;
       setWishlistItems(responseWithImage);
     } catch (error) {
-      console.log(error);
+      console.log(error.response.data.messages);
     }
   };
 
-  const removeFromWishlist = (id) => {
-    setWishlistItems(wishlistItems.filter((item) => item.bookId !== id));
+  //   remove from wishlist function
+  const removeFromWishlist = async (bookId) => {
+    try {
+      const response = await axios.delete(
+        `http://localhost:8080/user/delete-book-wishlist/${id}/${bookId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (response.status === 200) {
+        alert("book is deleted");
+        window.location.reload();
+      }
+    } catch (error) {
+      console.log(error.response.data.message);
+    }
   };
 
   useEffect(() => {

@@ -1,8 +1,10 @@
 package com.example.Backend.service.user;
 
 import com.example.Backend.dto.commonDto.ResponseMessageDto;
+import com.example.Backend.model.AuthorProfile;
 import com.example.Backend.model.Book;
 import com.example.Backend.model.UserProfile;
+import com.example.Backend.repo.AuthorRepo;
 import com.example.Backend.repo.BookRepo;
 import com.example.Backend.repo.UserRepo;
 import jakarta.transaction.Transactional;
@@ -10,6 +12,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -24,11 +27,19 @@ public class UserService {
 
     private UserRepo userRepo;
     private BookRepo bookRepo;
+    private AuthorRepo authorRepo;
 
     @Autowired
-    public UserService(UserRepo userRepo, BookRepo bookRepo) {
+    public UserService(UserRepo userRepo, BookRepo bookRepo, AuthorRepo authorRepo) {
         this.userRepo = userRepo;
         this.bookRepo = bookRepo;
+        this.authorRepo = authorRepo;
+    }
+
+//    check user exist
+    public UserProfile checkUserExist(Long userId) {
+        Optional<UserProfile> user = userRepo.findById(userId);
+        return user.orElse(null);
     }
 
 //    get user details by user id
@@ -132,5 +143,39 @@ public class UserService {
             return null;
         }
         return books;
+    }
+
+//    remove book from wish list
+    public String deleteBookFromWishlist(Long userId, Long bookId) {
+        Optional<UserProfile> userProfile = userRepo.findById(userId);
+        if(userProfile.isEmpty()) {
+            throw new RuntimeException("User not found");
+        }
+        UserProfile userProfile1 = userProfile.get();
+        Optional<Book> existBook = bookRepo.findById(bookId);
+        if(existBook.isEmpty()) {
+            throw new RuntimeException("Book not found");
+        }
+        Book book = existBook.get();
+        List<Book> books = userProfile1.getWishListBooks();
+        if(books.isEmpty()){
+            throw new RuntimeException("Wishlist does not exist");
+        }
+        userProfile1.getWishListBooks().remove(book);
+        userRepo.save(userProfile1);
+        return "Deleted Book from Wishlist";
+    }
+
+//    get author books by id
+    public List<Book> getAllBooksByAuthorId(Long authorId) {
+        Optional<AuthorProfile> authorProfile = authorRepo.findById(authorId);
+        if(authorProfile.isEmpty()) {
+            throw new RuntimeException("User not found");
+        }
+        List<Book> allBooks = authorProfile.get().getBooks();
+        if(allBooks.isEmpty()) {
+            return null;
+        }
+        return allBooks;
     }
 }

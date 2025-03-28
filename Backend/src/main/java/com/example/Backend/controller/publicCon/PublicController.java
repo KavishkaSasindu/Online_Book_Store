@@ -1,6 +1,7 @@
 package com.example.Backend.controller.publicCon;
 
 import com.example.Backend.dto.author.AuthorProfileResponse;
+import com.example.Backend.dto.author.AuthorResponseProfile;
 import com.example.Backend.dto.book.BookResponse;
 import com.example.Backend.dto.commonDto.ResponseMessageDto;
 import com.example.Backend.model.AuthorProfile;
@@ -166,13 +167,14 @@ public class PublicController {
                         .body(new ResponseMessageDto("No Authors Found"));
             }
 
-            List<AuthorProfileResponse> responseAuthors = returnAuthors.stream()
-                    .map(authors->new AuthorProfileResponse(
+            List<AuthorResponseProfile> responseAuthors = returnAuthors.stream()
+                    .map(authors->new AuthorResponseProfile(
+                            authors.getUserProfile().getUserId(),
                             authors.getAuthorId(),
                             authors.getAuthorName(),
                             authors.getAuthorBio(),
-                            authors.getUserProfile(),
-                            authors.getBooks()
+                            authors.getUserProfile().getImageData(),
+                            authors.getUserProfile().getEmail()
                     )).toList();
 
             return ResponseEntity

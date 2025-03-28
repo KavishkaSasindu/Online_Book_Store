@@ -23,10 +23,12 @@ import java.util.List;
 public class UserController {
 
     private UserService userService;
+    private Book book;
 
     @Autowired
-    public UserController(UserService userService) {
+    public UserController(UserService userService, Book book) {
         this.userService = userService;
+        this.book = book;
     }
 
     @GetMapping("/test-user")
@@ -81,11 +83,7 @@ public class UserController {
     public ResponseEntity<?> userImage(@PathVariable Long userId) {
         try{
             byte[] imageData = userService.userImage(userId);
-            if(imageData == null) {
-                return ResponseEntity
-                        .status(HttpStatus.NOT_FOUND)
-                        .body(new ResponseMessageDto("image not found"));
-            }
+//            here image can be null so directly send the response from service
             return ResponseEntity
                     .status(HttpStatus.OK)
                     .body(imageData);
@@ -143,6 +141,59 @@ public class UserController {
                     .status(HttpStatus.OK)
                     .body(response);
         } catch (Exception e) {
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ResponseMessageDto(e.getMessage()));
+        }
+    }
+
+//    remove book
+    @DeleteMapping("/delete-book-wishlist/{userId}/{bookId}")
+    public ResponseEntity<?> removeBookFromWishlist(@PathVariable Long userId,@PathVariable Long bookId) {
+        try{
+            String returnMessage = userService.deleteBookFromWishlist(userId,bookId);
+            if(returnMessage == null) {
+                return ResponseEntity
+                        .status(HttpStatus.BAD_REQUEST)
+                        .body(new ResponseMessageDto("Error"));
+            }
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body(returnMessage);
+        } catch (Exception e) {
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ResponseMessageDto(e.getMessage()));
+        }
+    }
+
+//    get all books by author id
+    @GetMapping("/get-book-author/{authorId}")
+    public ResponseEntity<?> getBooksById(@PathVariable Long authorId) {
+        try{
+            List<Book> returnBooks = userService.getAllBooksByAuthorId(authorId);
+            if(returnBooks == null) {
+                return ResponseEntity
+                        .status(HttpStatus.OK)
+                        .body(new ResponseMessageDto("No Books Found"));
+            }
+
+            List<BookResponse> bookResponse = returnBooks.stream()
+                    .map(book-> new BookResponse(
+                            book.getBookId(),
+                            book.getBookName(),
+                            book.getDescription(),
+                            book.getImageName(),
+                            book.getPrice(),
+                            book.getImageData(),
+                            book.getAuthorProfile().getAuthorName(),
+                            book.getCategory()
+                    )).toList();
+
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body(bookResponse);
+        }catch(Exception e) {
             return ResponseEntity
                     .status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(new ResponseMessageDto(e.getMessage()));

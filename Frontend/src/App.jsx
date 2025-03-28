@@ -12,10 +12,10 @@ import UserProfile from "./pages/user/UserProfile.jsx";
 import UpdateUserProfile from "./pages/user/UpdateUserProfile.jsx";
 import AdminDashboard from "./pages/admin/AdminDashboard.jsx";
 import AdminUsers from "./pages/admin/AdminUsers.jsx";
-import Unauthorized from "./pages/auth/Unauthorized.jsx";
 import About from "./pages/About.jsx";
-import Authors from "./pages/Authors.jsx";
+import Authors from "./pages/user/Authors.jsx";
 import Wishlist from "./pages/user/Wishlist.jsx";
+import AuthorViewBooks from "./pages/user/AuthorViewBooks.jsx";
 
 const App = () => {
   return (
@@ -28,6 +28,10 @@ const App = () => {
           <Route path={"/all-books"} element={<AllBooks />} />
           <Route path={"/about"} element={<About />} />
           <Route path={"/authors"} element={<Authors />} />
+          <Route
+            path={"/authors/view-book/:id"}
+            element={<AuthorViewBooks />}
+          />
 
           {/* authentication routes */}
           <Route path={"/auth/login"} element={<LogIn />} />

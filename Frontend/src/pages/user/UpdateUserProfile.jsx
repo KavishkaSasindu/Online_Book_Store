@@ -1,224 +1,241 @@
-import React, { useState } from "react";
-import { ArrowLeftIcon, SaveIcon, CameraIcon, XIcon } from "lucide-react";
-import { Link } from "react-router-dom";
+import React, { useContext, useEffect, useState } from "react";
+import { ArrowLeftIcon, SaveIcon, CameraIcon } from "lucide-react";
+import { Link, Navigate, useNavigate, useParams } from "react-router-dom";
+import axios from "axios";
+import { pre } from "framer-motion/client";
+import { AuthContext } from "../auth/AuthProvider";
 
 const UpdateUserProfile = () => {
-  // Sample user data based on your JSON
-  const [user, setUser] = useState({
-    userId: 6,
-    firstname: "Admin",
-    lastname: "Harry",
-    email: "admin.harry@example.com",
-    phone: "543-210-9876",
-    imageName: "",
-    imageType: null,
-    imageData: "",
-    profileCreatedAt: "2025-03-20T15:59:43.723564",
-    role: "ADMIN",
+  const { id } = useParams();
+  const navigate = useNavigate();
+  const token = localStorage.getItem("token");
+  const { user } = useContext(AuthContext);
+
+  const originalEmail = user?.email;
+
+  if (!token) {
+    return <Navigate to="/auth/login" />;
+  }
+
+  const [userData, setUserData] = useState({
+    firstname: "",
+    lastname: "",
+    email: "",
+    phone: "",
     address: {
-      street: "123 Elm Street",
-      city: "Dallas",
-      state: "TX",
-      zip: "78901",
-      country: "USA",
+      street: "",
+      city: "",
+      state: "",
+      zip: "",
+      country: "",
     },
   });
 
-  // State for form handling
-  const [formData, setFormData] = useState({ ...user });
-  const [activeSection, setActiveSection] = useState("personal");
+  const [image, setImage] = useState(null);
 
-  // Handle input changes
-  const handleChange = (e) => {
-    const { name, value } = e.target;
+  const fetchData = async () => {
+    try {
+      const response = await axios.get(
+        `http://localhost:8080/user/get-user-profile/${id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
-    if (name.includes(".")) {
-      const [parent, child] = name.split(".");
-      setFormData({
-        ...formData,
-        [parent]: {
-          ...formData[parent],
-          [child]: value,
-        },
-      });
-    } else {
-      setFormData({
-        ...formData,
-        [name]: value,
-      });
+      const profile = response.data;
+      setUserData(profile);
+
+      const userImage = await axios.get(
+        `http://localhost:8080/user/profile-image/${id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          responseType: "blob",
+        }
+      );
+
+      const imageData = URL.createObjectURL(userImage.data);
+      setImage(imageData);
+    } catch (error) {
+      console.error("Error fetching profile:", error);
     }
   };
 
-  // Handle form submission
-  const handleSubmit = (e) => {
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const handleChange = (e) => {
+    if (e.target.name in userData.address) {
+      setUserData((prevState) => ({
+        ...prevState,
+        address: {
+          ...prevState.address,
+          [e.target.name]: e.target.value,
+        },
+      }));
+    } else {
+      setUserData((prevState) => ({
+        ...prevState,
+        [e.target.name]: e.target.value,
+      }));
+    }
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Updated user data:", formData);
-    // Here you would typically make an API call to update the user
+    try {
+      const updateUser = {
+        firstname: userData.firstname,
+        lastname: userData.lastname,
+        email: userData.email,
+        phone: userData.phone,
+        address: {
+          street: userData.address.street,
+          city: userData.address.city,
+          state: userData.address.state,
+          zip: userData.address.zip,
+          country: userData.address.country,
+        },
+      };
+
+      const formData = new FormData();
+      formData.append("image", image);
+      formData.append(
+        "userProfile",
+        new Blob([JSON.stringify(updateUser)], { type: "application/json" })
+      );
+
+      const response = await axios.put(
+        `http://localhost:8080/user/update-profile/${id}`,
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+
+      const data = response.data;
+
+      if (data.email !== originalEmail) {
+        localStorage.clear();
+        alert(
+          "Profile is updated successfully...Email has been changed, please login"
+        );
+        navigate("/auth/login");
+      } else {
+        alert("Profile updated successfully");
+        navigate(`/user/user-profile/${id}`);
+      }
+      console.log(data);
+    } catch (error) {
+      console.log(error.response);
+    }
+  };
+
+  const changeImage = (e) => {
+    const selectedImage = e.target.files[0];
+    setImage(selectedImage);
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <div className="bg-[#504B38] text-white p-4 shadow-md">
-        <div className="container mx-auto">
-          <div className="flex items-center">
-            <button className="mr-3 p-1 hover:bg-[#3A3728] rounded-full">
-              <ArrowLeftIcon size={20} />
-            </button>
-            <h1 className="text-xl font-bold">Edit Profile</h1>
+    <div className="min-h-screen bg-gray-100 p-6">
+      <div className="max-w-4xl mx-auto bg-white shadow-2xl rounded-2xl overflow-hidden mt-15">
+        {/* Header */}
+        <div className="bg-[#504B38] text-white p-6 flex items-center justify-between">
+          <div className="flex items-center space-x-4">
+            <Link to={`/user/user-profile/${id}`}>
+              <ArrowLeftIcon
+                size={24}
+                className="cursor-pointer hover:text-gray-300"
+              />
+            </Link>
+            <h1 className="text-2xl font-bold">Edit Profile</h1>
           </div>
         </div>
-      </div>
 
-      {/* Main Content */}
-      <div className="container mx-auto py-6 px-4">
-        <form onSubmit={handleSubmit}>
-          {/* Profile Image Update Section */}
-          <div className="bg-white rounded-lg shadow-md p-6 mb-6">
-            <div className="flex flex-col items-center">
-              <div className="relative mb-4">
-                {formData.imageData ? (
-                  <img
-                    src={formData.imageData}
-                    alt={`${formData.firstname} ${formData.lastname}`}
-                    className="w-32 h-32 rounded-full object-cover border-4 border-[#EBE5C2]"
-                  />
-                ) : (
-                  <div className="w-32 h-32 rounded-full bg-[#504B38] flex items-center justify-center text-white text-3xl font-bold border-4 border-[#EBE5C2]">
-                    {formData.firstname.charAt(0)}
-                    {formData.lastname.charAt(0)}
-                  </div>
-                )}
-                <label
-                  htmlFor="profile-image-upload"
-                  className="absolute bottom-0 right-0 bg-[#EBE5C2] text-[#504B38] p-2 rounded-full cursor-pointer shadow-md"
-                >
-                  <CameraIcon size={20} />
-                  <input
-                    id="profile-image-upload"
-                    type="file"
-                    className="hidden"
-                  />
-                </label>
-              </div>
-              <h2 className="text-xl font-bold text-[#504B38]">
-                {formData.firstname} {formData.lastname}
-              </h2>
-              <p className="text-sm text-gray-500">{formData.role}</p>
+        {/* Profile Content */}
+        <form onSubmit={handleSubmit} className="p-8 space-y-8">
+          {/* Profile Image Section */}
+          <div className="flex flex-col items-center mb-8">
+            <div className="relative">
+              {image ? (
+                <img
+                  src={image}
+                  alt="Profile"
+                  className="w-40 h-40 rounded-full object-cover border-4 border-[#EBE5C2] shadow-lg"
+                />
+              ) : (
+                <div className="w-40 h-40 rounded-full bg-[#504B38] flex items-center justify-center text-white text-4xl font-bold">
+                  {userData.firstname?.[0]}
+                </div>
+              )}
+              <label
+                htmlFor="profile-image-upload"
+                className="absolute bottom-2 right-0 bg-[#504B38] text-white p-3 rounded-full cursor-pointer shadow-md hover:bg-[#3A3728] transition"
+              >
+                <CameraIcon size={20} />
+                <input
+                  id="profile-image-upload"
+                  type="file"
+                  className="hidden"
+                  onChange={changeImage}
+                />
+              </label>
             </div>
+            <h2 className="mt-4 text-2xl font-semibold text-[#504B38]">
+              {userData.firstname} {userData.lastname}
+            </h2>
+            <p className="text-gray-500">{userData.role}</p>
           </div>
 
-          {/* Navigation Tabs */}
-          <div className="bg-white rounded-lg shadow-md overflow-hidden mb-6">
-            <div className="flex border-b border-gray-200">
-              <button
-                type="button"
-                className={`flex-1 px-4 py-3 font-medium ${
-                  activeSection === "personal"
-                    ? "text-[#504B38] border-b-2 border-[#504B38]"
-                    : "text-gray-500"
-                }`}
-                onClick={() => setActiveSection("personal")}
-              >
-                Personal Info
-              </button>
-              <button
-                type="button"
-                className={`flex-1 px-4 py-3 font-medium ${
-                  activeSection === "contact"
-                    ? "text-[#504B38] border-b-2 border-[#504B38]"
-                    : "text-gray-500"
-                }`}
-                onClick={() => setActiveSection("contact")}
-              >
-                Contact Details
-              </button>
-              <button
-                type="button"
-                className={`flex-1 px-4 py-3 font-medium ${
-                  activeSection === "address"
-                    ? "text-[#504B38] border-b-2 border-[#504B38]"
-                    : "text-gray-500"
-                }`}
-                onClick={() => setActiveSection("address")}
-              >
-                Address
-              </button>
-            </div>
-
+          {/* Profile Details Grid */}
+          <div className="grid md:grid-cols-2 gap-6">
             {/* Personal Information */}
-            {activeSection === "personal" && (
-              <div className="p-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      First Name
-                    </label>
-                    <input
-                      type="text"
-                      name="firstname"
-                      value={formData.firstname}
-                      onChange={handleChange}
-                      className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#504B38] bg-[#EBE5C2] bg-opacity-20"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Last Name
-                    </label>
-                    <input
-                      type="text"
-                      name="lastname"
-                      value={formData.lastname}
-                      onChange={handleChange}
-                      className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#504B38] bg-[#EBE5C2] bg-opacity-20"
-                    />
-                  </div>
-                </div>
-                <div className="mt-4">
+            <div>
+              <h3 className="text-xl font-semibold text-[#504B38] mb-4 border-b pb-2">
+                Personal Details
+              </h3>
+              <div className="space-y-4">
+                <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
-                    User ID
+                    First Name
                   </label>
                   <input
                     type="text"
-                    name="userId"
-                    value={formData.userId}
-                    disabled
-                    className="w-full p-3 border border-gray-300 rounded-md bg-gray-100 text-gray-500"
+                    name="firstname"
+                    value={userData.firstname}
+                    onChange={handleChange}
+                    className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#504B38] bg-[#EBE5C2] bg-opacity-30"
                   />
-                  <p className="text-xs text-gray-500 mt-1">
-                    User ID cannot be changed
-                  </p>
                 </div>
-                <div className="mt-4">
+                <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Role
+                    Last Name
                   </label>
-                  <div className="p-3 border border-gray-300 rounded-md bg-gray-100">
-                    <span className="bg-[#504B38] text-white px-2 py-1 rounded-full text-sm">
-                      {formData.role}
-                    </span>
-                  </div>
-                  <p className="text-xs text-gray-500 mt-1">
-                    Role changes must be made by an administrator
-                  </p>
+                  <input
+                    type="text"
+                    name="lastname"
+                    value={userData.lastname}
+                    onChange={handleChange}
+                    className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#504B38] bg-[#EBE5C2] bg-opacity-30"
+                  />
                 </div>
-              </div>
-            )}
-
-            {/* Contact Information */}
-            {activeSection === "contact" && (
-              <div className="p-6">
-                <div className="mb-6">
+                <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
                     Email Address
                   </label>
                   <input
                     type="email"
                     name="email"
-                    value={formData.email}
+                    value={userData.email}
                     onChange={handleChange}
-                    className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#504B38] bg-[#EBE5C2] bg-opacity-20"
+                    className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#504B38] bg-[#EBE5C2] bg-opacity-30"
                   />
                 </div>
                 <div>
@@ -228,115 +245,116 @@ const UpdateUserProfile = () => {
                   <input
                     type="tel"
                     name="phone"
-                    value={formData.phone}
+                    value={userData.phone}
                     onChange={handleChange}
-                    className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#504B38] bg-[#EBE5C2] bg-opacity-20"
+                    className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#504B38] bg-[#EBE5C2] bg-opacity-30"
                   />
                 </div>
-                <div className="mt-6 p-4 bg-[#EBE5C2] bg-opacity-30 rounded-lg border border-[#EBE5C2]">
-                  <h3 className="text-sm font-semibold text-[#504B38] mb-2">
-                    Account Created
-                  </h3>
-                  <p className="text-gray-700">
-                    {new Date(formData.profileCreatedAt).toLocaleDateString(
-                      "en-US",
-                      {
-                        year: "numeric",
-                        month: "long",
-                        day: "numeric",
-                      }
-                    )}
-                  </p>
-                </div>
               </div>
-            )}
+            </div>
 
             {/* Address Information */}
-            {activeSection === "address" && (
-              <div className="p-6">
-                <div className="mb-4">
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+            <div>
+              <h3 className="text-xl font-semibold text-[#504B38] mb-4 border-b pb-2">
+                Address Details
+              </h3>
+              <div className="space-y-4">
+                <div>
+                  <label
+                    className="block text-sm font-medium text-gray-700 mb-1"
+                    htmlFor="street"
+                  >
                     Street Address
                   </label>
                   <input
                     type="text"
-                    name="address.street"
-                    value={formData.address.street}
+                    name="street"
+                    value={userData.address?.street || ""}
                     onChange={handleChange}
-                    className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#504B38] bg-[#EBE5C2] bg-opacity-20"
+                    className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#504B38] bg-[#EBE5C2] bg-opacity-30"
                   />
                 </div>
-                <div className="grid grid-cols-2 gap-4 mb-4">
+                <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                    <label
+                      className="block text-sm font-medium text-gray-700 mb-1"
+                      htmlFor="city"
+                    >
                       City
                     </label>
                     <input
                       type="text"
-                      name="address.city"
-                      value={formData.address.city}
+                      name="city"
+                      value={userData.address?.city || ""}
                       onChange={handleChange}
-                      className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#504B38] bg-[#EBE5C2] bg-opacity-20"
+                      className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#504B38] bg-[#EBE5C2] bg-opacity-30"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                    <label
+                      className="block text-sm font-medium text-gray-700 mb-1"
+                      htmlFor="state"
+                    >
                       State
                     </label>
                     <input
                       type="text"
-                      name="address.state"
-                      value={formData.address.state}
+                      name="state"
+                      value={userData.address?.state || ""}
                       onChange={handleChange}
-                      className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#504B38] bg-[#EBE5C2] bg-opacity-20"
+                      className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#504B38] bg-[#EBE5C2] bg-opacity-30"
                     />
                   </div>
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                    <label
+                      className="block text-sm font-medium text-gray-700 mb-1"
+                      htmlFor="zip"
+                    >
                       ZIP Code
                     </label>
                     <input
                       type="text"
-                      name="address.zip"
-                      value={formData.address.zip}
+                      name="zip"
+                      value={userData.address?.zip || ""}
                       onChange={handleChange}
-                      className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#504B38] bg-[#EBE5C2] bg-opacity-20"
+                      className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#504B38] bg-[#EBE5C2] bg-opacity-30"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                    <label
+                      className="block text-sm font-medium text-gray-700 mb-1"
+                      htmlFor="country"
+                    >
                       Country
                     </label>
                     <input
                       type="text"
-                      name="address.country"
-                      value={formData.address.country}
+                      name="country"
+                      value={userData.address?.country || ""}
                       onChange={handleChange}
-                      className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#504B38] bg-[#EBE5C2] bg-opacity-20"
+                      className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#504B38] bg-[#EBE5C2] bg-opacity-30"
                     />
                   </div>
                 </div>
               </div>
-            )}
+            </div>
           </div>
 
           {/* Action Buttons */}
-          <div className="flex justify-between">
-            <Link to={"/user/user-profile"}>
+          <div className="flex justify-end space-x-4 mt-8">
+            <Link to={`/user/user-profile/${id}`}>
               <button
                 type="button"
-                className="px-6 py-3 bg-gray-200 text-gray-700 rounded-md font-medium flex items-center"
-                onClick={() => console.log("Cancel")}
+                className="px-6 py-3 bg-gray-200 text-gray-700 rounded-md font-medium hover:bg-gray-300 transition"
               >
-                <XIcon size={18} className="mr-2" />
                 Cancel
               </button>
             </Link>
             <button
               type="submit"
-              className="px-6 py-3 bg-[#504B38] text-white rounded-md font-medium flex items-center"
+              className="px-6 py-3 bg-[#504B38] text-white rounded-md font-medium hover:bg-[#3A3728] transition flex items-center"
             >
               <SaveIcon size={18} className="mr-2" />
               Save Changes

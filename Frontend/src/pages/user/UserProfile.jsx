@@ -120,12 +120,16 @@ const UserProfile = () => {
             </div>
             <span className="text-sm font-medium text-[#504B38]">Profile</span>
           </div>
-          <div className="bg-white p-4 rounded-xl shadow-sm flex flex-col items-center justify-center hover:bg-gray-50 cursor-pointer transition-colors">
-            <div className="bg-[#EBE5C2] p-3 rounded-full mb-2">
-              <BookIcon size={20} className="text-[#504B38]" />
+          <Link to={`/user/user-wishlist/${id}`}>
+            <div className="bg-white p-4 rounded-xl shadow-sm flex flex-col items-center justify-center hover:bg-gray-50 cursor-pointer transition-colors">
+              <div className="bg-[#EBE5C2] p-3 rounded-full mb-2">
+                <BookIcon size={20} className="text-[#504B38]" />
+              </div>
+              <span className="text-sm font-medium text-[#504B38]">
+                Wishlist
+              </span>
             </div>
-            <span className="text-sm font-medium text-[#504B38]">My Books</span>
-          </div>
+          </Link>
         </div>
 
         {/* Profile Content */}
