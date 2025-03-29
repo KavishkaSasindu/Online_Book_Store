@@ -7,6 +7,8 @@ import com.example.Backend.model.Book;
 import com.example.Backend.model.UserProfile;
 import com.example.Backend.repo.AuthorRepo;
 import com.example.Backend.repo.BookRepo;
+import com.example.Backend.repo.UserRepo;
+import com.example.Backend.repo.WishlistRepo;
 import jakarta.transaction.Transactional;
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,13 +25,17 @@ import java.util.Optional;
 @Service
 public class AuthorService {
 
+    private final WishlistRepo wishlistRepo;
+    private final UserRepo userRepo;
     private BookRepo bookRepo;
     private AuthorRepo authorRepo;
 
     @Autowired
-    public AuthorService(BookRepo bookRepo, AuthorRepo authorRepo) {
+    public AuthorService(BookRepo bookRepo, AuthorRepo authorRepo, WishlistRepo wishlistRepo, UserRepo userRepo) {
         this.bookRepo = bookRepo;
         this.authorRepo = authorRepo;
+        this.wishlistRepo = wishlistRepo;
+        this.userRepo = userRepo;
     }
 
     public AuthorProfile checkAuthorExists(Long authorId) {
@@ -167,12 +173,19 @@ public class AuthorService {
         }
 
         Book book = existingBook.get();
-
-//        find author belongs that book
+        //        find author belongs that book
         if(!Objects.equals(book.getAuthorProfile().getAuthorId(), existingAuthor.getAuthorId())) {
             throw new RuntimeException(String.valueOf(new ResponseMessageDto("Author not belongs to this book")));
         }
+        // Remove book from all wishlists FIRST
+        List<UserProfile> usersWithBookInWishlist = userRepo.findByWishListBooksContains(book);
+        usersWithBookInWishlist.forEach(user ->
+                user.getWishListBooks().remove(book)
+        );
+        userRepo.saveAll(usersWithBookInWishlist);
+
         bookRepo.delete(book);
+
         return book;
     }
 

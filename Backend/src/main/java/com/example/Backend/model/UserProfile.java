@@ -13,6 +13,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -85,7 +86,7 @@ public class UserProfile implements UserDetails {
                     name = "book_id"
             )
     )
-    private List<Book> wishListBooks;
+    private List<Book> wishListBooks = new ArrayList<>();
 
     @PrePersist
     public void onCreate() {

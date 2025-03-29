@@ -21,31 +21,11 @@ const AuthorNavbar = () => {
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [profileMenuOpen, setProfileMenuOpen] = useState(false);
-  const [notificationsOpen, setNotificationsOpen] = useState(false);
   const profileMenuRef = useRef(null);
-  const notificationsRef = useRef(null);
 
-  // Sample notifications
-  const notifications = [
-    {
-      id: 1,
-      message: "Your book was approved",
-      time: "2 hours ago",
-      read: false,
-    },
-    {
-      id: 2,
-      message: "New purchase of 'Book Title'",
-      time: "1 day ago",
-      read: true,
-    },
-    {
-      id: 3,
-      message: "Review received on 'Book Title'",
-      time: "3 days ago",
-      read: true,
-    },
-  ];
+  const { user } = useContext(AuthContext);
+  const userId = user?.userId;
+  const authorId = user?.authorId;
 
   useEffect(() => {
     const handleScroll = () => {
@@ -58,12 +38,6 @@ const AuthorNavbar = () => {
         !profileMenuRef.current.contains(event.target)
       ) {
         setProfileMenuOpen(false);
-      }
-      if (
-        notificationsRef.current &&
-        !notificationsRef.current.contains(event.target)
-      ) {
-        setNotificationsOpen(false);
       }
     };
 
@@ -85,6 +59,10 @@ const AuthorNavbar = () => {
 
   const isActive = (path) => {
     return location.pathname === path;
+  };
+
+  const toggleProfileMenu = () => {
+    setProfileMenuOpen(!profileMenuOpen);
   };
 
   return (
@@ -118,9 +96,9 @@ const AuthorNavbar = () => {
               Books
             </Link>
             <Link
-              to="/author/add-book"
+              to={`/author/add-book/${authorId}`}
               className={`px-3 py-2 rounded-md text-[#504B38] font-medium transition-colors ${
-                isActive("/add-book")
+                isActive(`/author/add-book/${authorId}`)
                   ? "bg-[#504B38]/20 text-[#3A3728]"
                   : "hover:bg-[#504B38]/10 hover:text-[#3A3728]"
               }`}
@@ -128,24 +106,34 @@ const AuthorNavbar = () => {
               Add Book
             </Link>
             <Link
-              to="/manage-books"
+              to={`/author/my-books/${authorId}`}
               className={`px-3 py-2 rounded-md text-[#504B38] font-medium transition-colors ${
                 isActive("/manage-books")
                   ? "bg-[#504B38]/20 text-[#3A3728]"
                   : "hover:bg-[#504B38]/10 hover:text-[#3A3728]"
               }`}
             >
-              Manage Books
+              My Books
             </Link>
             <Link
-              to="/earnings"
+              to={`/user/user-wishlist/${userId}`}
               className={`px-3 py-2 rounded-md text-[#504B38] font-medium transition-colors ${
-                isActive("/earnings")
+                isActive(`/user/user-wishlist/${userId}`)
                   ? "bg-[#504B38]/20 text-[#3A3728]"
                   : "hover:bg-[#504B38]/10 hover:text-[#3A3728]"
               }`}
             >
-              Earnings
+              Wishlist
+            </Link>
+            <Link
+              to="/authors"
+              className={`px-3 py-2 rounded-md text-[#504B38] font-medium transition-colors ${
+                isActive("/authors")
+                  ? "bg-[#504B38]/20 text-[#3A3728]"
+                  : "hover:bg-[#504B38]/10 hover:text-[#3A3728]"
+              }`}
+            >
+              Authors
             </Link>
           </div>
 
@@ -154,10 +142,7 @@ const AuthorNavbar = () => {
             {/* User Menu */}
             <div className="relative" ref={profileMenuRef}>
               <button
-                onClick={() => {
-                  setProfileMenuOpen(!profileMenuOpen);
-                  setNotificationsOpen(false);
-                }}
+                onClick={toggleProfileMenu}
                 className="flex items-center space-x-2 text-[#504B38] font-medium px-3 py-2 rounded-md hover:bg-[#504B38]/10 transition-colors"
               >
                 <span>Hello, {firstname}</span>
@@ -178,30 +163,23 @@ const AuthorNavbar = () => {
               >
                 <Link
                   to="/author-profile"
-                  className="block px-4 py-2 text-[#504B38] hover:bg-[#EBE5C2] transition-colors  items-center"
+                  className=" px-4 py-2 text-[#504B38] hover:bg-[#EBE5C2] transition-colors flex items-center"
                 >
-                  <User className="h-4 w-4 mr-2" />
+                  <User className="h-4 w-4 mr-2 inline" />
                   Author Profile
                 </Link>
                 <Link
-                  to="/author-dashboard"
-                  className="block px-4 py-2 text-[#504B38] hover:bg-[#EBE5C2] transition-colors  items-center"
+                  to={`/author/add-book/${authorId}`}
+                  className=" px-4 py-2 text-[#504B38] hover:bg-[#EBE5C2] transition-colors flex items-center"
                 >
-                  <LineChart className="h-4 w-4 mr-2" />
-                  Dashboard
-                </Link>
-                <Link
-                  to="/author/add-book"
-                  className="block px-4 py-2 text-[#504B38] hover:bg-[#EBE5C2] transition-colors  items-center"
-                >
-                  <PlusCircle className="h-4 w-4 mr-2" />
+                  <PlusCircle className="h-4 w-4 mr-2 inline" />
                   New Book
                 </Link>
                 <button
                   onClick={logOut}
-                  className="block w-full text-left px-4 py-2 text-[#504B38] hover:bg-[#EBE5C2] transition-colors  items-center"
+                  className=" w-full text-left px-4 py-2 text-[#504B38] hover:bg-[#EBE5C2] transition-colors flex items-center"
                 >
-                  <LogOut className="h-4 w-4 mr-2" />
+                  <LogOut className="h-4 w-4 mr-2 inline" />
                   Log out
                 </button>
               </div>
@@ -210,13 +188,6 @@ const AuthorNavbar = () => {
 
           {/* Mobile menu button */}
           <div className="md:hidden flex items-center space-x-1">
-            <button className="p-2 text-[#504B38] hover:text-[#3A3728] hover:bg-[#504B38]/10 rounded-full relative">
-              <Bell className="h-6 w-6" />
-              <span className="absolute top-1 right-1 bg-red-500 text-white text-xs w-4 h-4 flex items-center justify-center rounded-full">
-                {notifications.filter((n) => !n.read).length}
-              </span>
-            </button>
-
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               className="text-[#504B38] hover:text-[#3A3728] p-2"
@@ -232,6 +203,83 @@ const AuthorNavbar = () => {
           </div>
         </div>
       </div>
+
+      {/* Mobile menu, show/hide based on menu state */}
+      {mobileMenuOpen && (
+        <div className="md:hidden bg-[#EBE5C2] shadow-lg">
+          <div className="px-2 pt-2 pb-3 space-y-1">
+            <Link
+              to="/all-books"
+              className={`block px-3 py-2 rounded-md text-[#504B38] font-medium ${
+                isActive("/all-books")
+                  ? "bg-[#504B38]/20 text-[#3A3728]"
+                  : "hover:bg-[#504B38]/10"
+              }`}
+            >
+              Books
+            </Link>
+            <Link
+              to={`/author/add-book/${authorId}`}
+              className={`block px-3 py-2 rounded-md text-[#504B38] font-medium ${
+                isActive(`/author/add-book/${authorId}`)
+                  ? "bg-[#504B38]/20 text-[#3A3728]"
+                  : "hover:bg-[#504B38]/10"
+              }`}
+            >
+              Add Book
+            </Link>
+            <Link
+              to="/manage-books"
+              className={`block px-3 py-2 rounded-md text-[#504B38] font-medium ${
+                isActive("/manage-books")
+                  ? "bg-[#504B38]/20 text-[#3A3728]"
+                  : "hover:bg-[#504B38]/10"
+              }`}
+            >
+              Manage Books
+            </Link>
+            <Link
+              to={`/user/user-wishlist/${userId}`}
+              className={`block px-3 py-2 rounded-md text-[#504B38] font-medium ${
+                isActive(`/user/user-wishlist/${userId}`)
+                  ? "bg-[#504B38]/20 text-[#3A3728]"
+                  : "hover:bg-[#504B38]/10"
+              }`}
+            >
+              Wishlist
+            </Link>
+            <Link
+              to="/authors"
+              className={`block px-3 py-2 rounded-md text-[#504B38] font-medium ${
+                isActive("/authors")
+                  ? "bg-[#504B38]/20 text-[#3A3728]"
+                  : "hover:bg-[#504B38]/10"
+              }`}
+            >
+              Authors
+            </Link>
+            <div className="border-t border-[#504B38]/20 pt-2">
+              <div className="px-3 py-2 text-[#504B38] font-medium">
+                Hello, {firstname}
+              </div>
+              <Link
+                to="/author-profile"
+                className=" px-3 py-2 rounded-md text-[#504B38] font-medium hover:bg-[#504B38]/10 flex items-center"
+              >
+                <User className="h-4 w-4 mr-2" />
+                Author Profile
+              </Link>
+              <button
+                onClick={logOut}
+                className=" w-full text-left px-3 py-2 rounded-md text-[#504B38] font-medium hover:bg-[#504B38]/10 flex items-center"
+              >
+                <LogOut className="h-4 w-4 mr-2" />
+                Log out
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </nav>
   );
 };

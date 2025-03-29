@@ -1,25 +1,14 @@
-import React, { useState } from "react";
-import { Link, Navigate, useNavigate } from "react-router-dom";
 import axios from "axios";
+import React, { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 
 const CreateBook = () => {
-  const navigete = useNavigate();
+  const { id } = useParams();
+  const navigate = useNavigate();
+  const token = localStorage.getItem("token");
 
-  const [bookData, setBookData] = useState({
-    bookName: "",
-    description: "",
-    price: "",
-    category: "",
-  });
-
-  const [image, setImage] = useState(null);
-
-  const [errors, setErrors] = useState({});
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [previewImage, setPreviewImage] = useState(null);
-
-  const categories = [
-    "All",
+  const category = [
+    "Select one",
     "FICTION",
     "NON_FICTION",
     "SCIENCE_FICTION",
@@ -30,360 +19,297 @@ const CreateBook = () => {
     "HISTORY",
   ];
 
+  const [bookData, setBookData] = useState({
+    bookName: "",
+    description: "",
+    price: "",
+    category: "",
+  });
+  const [image, setImage] = useState(null);
+  const [imagePreview, setImagePreview] = useState(null);
+
   const handleChange = (e) => {
-    const { name, value } = e.target;
     setBookData({
       ...bookData,
-      [name]: value,
+      [e.target.name]: e.target.value,
     });
   };
 
-  const token = localStorage.getItem("token");
-  if (!token) {
-    navigete("/auth/login");
-  }
+  const handleImage = (e) => {
+    const imageData = e.target.files[0];
+    setImage(imageData);
 
-  const handleImageChange = (e) => {
-    const image = e.target.files[0];
-    if (image) {
-      setImage(image);
-
+    // Create preview URL for the selected image
+    if (imageData) {
       const reader = new FileReader();
       reader.onload = () => {
-        setPreviewImage(reader.result);
+        setImagePreview(reader.result);
       };
-      reader.readAsDataURL(image);
+      reader.readAsDataURL(imageData);
     }
-  };
-
-  const validateForm = () => {
-    const newErrors = {};
-
-    if (!bookData.bookName.trim()) {
-      newErrors.bookName = "Book name is required";
-    }
-
-    if (!bookData.description.trim()) {
-      newErrors.description = "Description is required";
-    }
-
-    if (!bookData.price) {
-      newErrors.price = "Price is required";
-    } else if (
-      isNaN(parseFloat(bookData.price)) ||
-      parseFloat(bookData.price) <= 0
-    ) {
-      newErrors.price = "Price must be a positive number";
-    }
-
-    if (!bookData.category || bookData.category === "All") {
-      newErrors.category = "Please select a specific category";
-    }
-
-    return newErrors;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    try {
+      const formData = new FormData();
+      formData.append(
+        "book",
+        new Blob([JSON.stringify(bookData)], { type: "application/json" })
+      );
+      formData.append("image", image);
+      console.log(formData);
 
-    const formErrors = validateForm();
-    if (Object.keys(formErrors).length > 0) {
-      setErrors(formErrors);
-      return;
-    }
+      const response = await axios.post(
+        `http://localhost:8080/author/add-book/${id}`,
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
-    setIsSubmitting(true);
-
-    // Here you would normally send the data to your backend
-    const formData = new FormData();
-    formData.append(
-      "book",
-      new Blob([JSON.stringify(bookData)], { type: "application/json" })
-    );
-    formData.append("image", image);
-
-    const response = await axios.post(
-      `http://localhost:8080/author/add-book/1`,
-      formData,
-      {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
+      const data = await response.data;
+      if (response.status == 201) {
+        alert("Book successfully added,View in your books");
+        navigate("/all-books");
       }
-    );
-    console.log(response.data);
-    const data = await response.data;
-    console.log(formData);
-
-    // Simulate API call
-    setTimeout(() => {
-      alert("Book added successfully!");
-      setBookData({
-        bookName: "",
-        description: "",
-        price: "",
-        category: "",
-        coverImage: null,
-      });
-      setPreviewImage(null);
-      setIsSubmitting(false);
-    }, 1500);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
+  useEffect(() => {
+    if (!token) {
+      navigate("/auth/login");
+    }
+  }, []);
+
   return (
-    <div className="bg-[#F8F3D9] min-h-screen">
-      {/* Page Title */}
-      <div className="bg-[#B9B28A] py-8 px-6">
-        <div className="container mx-auto">
+    <div className="min-h-screen bg-gray-200 py-12 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-3xl mx-auto bg-white rounded-xl shadow-lg overflow-hidden mt-15">
+        <div className="bg-gradient-to-r from-[#504B38] to-[#EBE5C2] py-6 px-8">
           <h1 className="text-3xl font-bold text-white">Add New Book</h1>
+          <p className="text-[#EBE5C2] mt-2">
+            Share your literary creation with the world
+          </p>
         </div>
-      </div>
 
-      {/* Form Section */}
-      <section className="py-12 px-6">
-        <div className="container mx-auto max-w-4xl">
-          <div className="bg-white rounded-lg shadow-lg overflow-hidden">
-            <div className="bg-[#EBE5C2] py-4 px-6 border-b border-[#B9B28A]">
-              <h2 className="text-xl font-semibold text-[#504B38]">
-                Book Information
-              </h2>
-              <p className="text-sm text-gray-600">
-                Fill in the details to add a new book to the store
-              </p>
-            </div>
-
-            <form onSubmit={handleSubmit} className="p-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="md:col-span-2">
+        <div className="p-8">
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {/* Left column - Form fields */}
+              <div className="space-y-6">
+                <div>
                   <label
                     htmlFor="bookName"
-                    className="block text-sm font-medium text-[#504B38] mb-1"
+                    className="block text-sm font-medium text-gray-700"
                   >
                     Book Title
                   </label>
                   <input
                     type="text"
-                    id="bookName"
                     name="bookName"
-                    value={bookData.bookName}
+                    id="bookName"
                     onChange={handleChange}
-                    className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#504B38] ${
-                      errors.bookName ? "border-red-500" : "border-gray-300"
-                    }`}
+                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#504B38] focus:ring focus:ring-[#EBE5C2] focus:ring-opacity-50 p-2 border"
                     placeholder="Enter book title"
+                    required
                   />
-                  {errors.bookName && (
-                    <p className="text-red-500 text-sm mt-1">
-                      {errors.bookName}
-                    </p>
-                  )}
                 </div>
 
-                <div className="md:col-span-2">
+                <div>
                   <label
                     htmlFor="description"
-                    className="block text-sm font-medium text-[#504B38] mb-1"
+                    className="block text-sm font-medium text-gray-700"
                   >
                     Description
                   </label>
                   <textarea
-                    id="description"
                     name="description"
-                    value={bookData.description}
-                    onChange={handleChange}
+                    id="description"
                     rows="4"
-                    className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#504B38] ${
-                      errors.description ? "border-red-500" : "border-gray-300"
-                    }`}
-                    placeholder="Enter book description"
+                    onChange={handleChange}
+                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#504B38] focus:ring focus:ring-[#EBE5C2] focus:ring-opacity-50 p-2 border"
+                    placeholder="Write a compelling description..."
+                    required
                   ></textarea>
-                  {errors.description && (
-                    <p className="text-red-500 text-sm mt-1">
-                      {errors.description}
-                    </p>
-                  )}
                 </div>
 
                 <div>
                   <label
                     htmlFor="price"
-                    className="block text-sm font-medium text-[#504B38] mb-1"
+                    className="block text-sm font-medium text-gray-700"
                   >
-                    Price ($)
+                    Price
                   </label>
-                  <input
-                    type="number"
-                    id="price"
-                    name="price"
-                    value={bookData.price}
-                    onChange={handleChange}
-                    step="0.01"
-                    min="0"
-                    className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#504B38] ${
-                      errors.price ? "border-red-500" : "border-gray-300"
-                    }`}
-                    placeholder="0.00"
-                  />
-                  {errors.price && (
-                    <p className="text-red-500 text-sm mt-1">{errors.price}</p>
-                  )}
+                  <div className="mt-1 relative rounded-md shadow-sm">
+                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                      <span className="text-gray-500 sm:text-sm">$</span>
+                    </div>
+                    <input
+                      type="number"
+                      name="price"
+                      id="price"
+                      step="any"
+                      onChange={handleChange}
+                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#504B38] focus:ring focus:ring-[#EBE5C2] focus:ring-opacity-50 pl-7 p-2 border"
+                      placeholder="0.00"
+                      required
+                    />
+                  </div>
                 </div>
 
                 <div>
                   <label
                     htmlFor="category"
-                    className="block text-sm font-medium text-[#504B38] mb-1"
+                    className="block text-sm font-medium text-gray-700"
                   >
                     Category
                   </label>
-                  <div className="relative">
-                    <select
-                      id="category"
-                      name="category"
-                      value={bookData.category}
-                      onChange={handleChange}
-                      className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#504B38] appearance-none bg-white ${
-                        errors.category ? "border-red-500" : "border-gray-300"
-                      }`}
-                    >
-                      <option value="">Select a category</option>
-                      {categories.map((category) => (
-                        <option key={category} value={category}>
-                          {category}
-                        </option>
-                      ))}
-                    </select>
-                    <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
+                  <select
+                    name="category"
+                    id="category"
+                    onChange={handleChange}
+                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#504B38] focus:ring focus:ring-[#EBE5C2] focus:ring-opacity-50 p-2 border"
+                    required
+                  >
+                    {category.map((cat) => (
+                      <option value={cat} key={cat}>
+                        {cat}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+
+              {/* Right column - Image upload & preview */}
+              <div className="flex flex-col space-y-4">
+                <label className="block text-sm font-medium text-gray-700">
+                  Cover Image
+                </label>
+
+                <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md h-64">
+                  {imagePreview ? (
+                    <div className="w-full h-full flex items-center justify-center relative">
+                      <img
+                        src={imagePreview}
+                        alt="Book cover preview"
+                        className="max-h-full max-w-full object-contain"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setImagePreview(null);
+                          setImage(null);
+                        }}
+                        className="absolute top-2 right-2 bg-red-500 text-white rounded-full p-1"
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          className="h-5 w-5"
+                          viewBox="0 0 20 20"
+                          fill="currentColor"
+                        >
+                          <path
+                            fillRule="evenodd"
+                            d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                            clipRule="evenodd"
+                          />
+                        </svg>
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="space-y-1 text-center flex flex-col items-center justify-center">
                       <svg
-                        className="w-5 h-5 text-gray-500"
-                        fill="currentColor"
+                        className="mx-auto h-12 w-12 text-gray-400"
+                        stroke="currentColor"
+                        fill="none"
+                        viewBox="0 0 48 48"
+                      >
+                        <path
+                          d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                      </svg>
+                      <div className="flex text-sm text-gray-600">
+                        <label
+                          htmlFor="image"
+                          className="relative cursor-pointer bg-white rounded-md font-medium text-[#504B38] hover:text-[#EBE5C2] focus-within:outline-none"
+                        >
+                          <span>Upload a file</span>
+                          <input
+                            id="image"
+                            name="image"
+                            type="file"
+                            className="sr-only"
+                            onChange={handleImage}
+                            accept="image/*"
+                          />
+                        </label>
+                        <p className="pl-1">or drag and drop</p>
+                      </div>
+                      <p className="text-xs text-gray-500">
+                        PNG, JPG, GIF up to 10MB
+                      </p>
+                    </div>
+                  )}
+                </div>
+
+                {!imagePreview && (
+                  <div className="mt-1">
+                    <label
+                      htmlFor="image-upload"
+                      className="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-[#504B38] hover:bg-[#3a3728] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#EBE5C2] cursor-pointer"
+                    >
+                      <svg
+                        className="-ml-1 mr-2 h-5 w-5"
+                        xmlns="http://www.w3.org/2000/svg"
                         viewBox="0 0 20 20"
+                        fill="currentColor"
                       >
                         <path
                           fillRule="evenodd"
-                          d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                          d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z"
                           clipRule="evenodd"
-                        ></path>
-                      </svg>
-                    </div>
-                  </div>
-                  {errors.category && (
-                    <p className="text-red-500 text-sm mt-1">
-                      {errors.category}
-                    </p>
-                  )}
-                  {bookData.category === "All" && (
-                    <p className="text-red-500 text-sm mt-1">
-                      Choose most suitable category
-                    </p>
-                  )}
-                </div>
-
-                <div className="md:col-span-2">
-                  <label
-                    htmlFor="coverImage"
-                    className="block text-sm font-medium text-[#504B38] mb-1"
-                  >
-                    Cover Image
-                  </label>
-                  <div className="flex items-center space-x-6">
-                    <div className="flex-1">
-                      <div className="relative border-2 border-dashed border-gray-300 rounded-lg p-4 text-center hover:border-[#504B38] transition-colors duration-300">
-                        <input
-                          type="file"
-                          id="coverImage"
-                          name="coverImage"
-                          accept="image/*"
-                          onChange={handleImageChange}
-                          className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
                         />
-                        <div className="space-y-2">
-                          <svg
-                            className="mx-auto h-12 w-12 text-gray-400"
-                            stroke="currentColor"
-                            fill="none"
-                            viewBox="0 0 48 48"
-                            aria-hidden="true"
-                          >
-                            <path
-                              d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
-                              strokeWidth="2"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                            />
-                          </svg>
-                          <p className="text-sm text-gray-500">
-                            {previewImage
-                              ? "Click to change image"
-                              : "Click to upload or drag and drop"}
-                          </p>
-                          <p className="text-xs text-gray-500">
-                            PNG, JPG, GIF up to 5MB
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-
-                    {previewImage && (
-                      <div className="w-24 h-32 rounded-md overflow-hidden border border-gray-300 shadow-sm">
-                        <img
-                          src={previewImage}
-                          alt="Cover preview"
-                          className="w-full h-full object-cover"
-                        />
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </div>
-
-              <div className="mt-8 pt-6 border-t border-gray-200 flex justify-end">
-                <button
-                  type="button"
-                  className="px-6 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-100 focus:outline-none mr-3"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  disabled={isSubmitting}
-                  className={`px-6 py-2 bg-[#504B38] text-white rounded-md text-sm font-medium hover:bg-[#3A3728] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#504B38] ${
-                    isSubmitting ? "opacity-75 cursor-not-allowed" : ""
-                  }`}
-                >
-                  {isSubmitting ? (
-                    <span className="flex items-center">
-                      <svg
-                        className="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                      >
-                        <circle
-                          className="opacity-25"
-                          cx="12"
-                          cy="12"
-                          r="10"
-                          stroke="currentColor"
-                          strokeWidth="4"
-                        ></circle>
-                        <path
-                          className="opacity-75"
-                          fill="currentColor"
-                          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                        ></path>
                       </svg>
-                      Saving...
-                    </span>
-                  ) : (
-                    "Add Book"
-                  )}
-                </button>
+                      Select Image
+                      <input
+                        id="image-upload"
+                        name="image"
+                        type="file"
+                        className="sr-only"
+                        onChange={handleImage}
+                        accept="image/*"
+                      />
+                    </label>
+                  </div>
+                )}
               </div>
-            </form>
-          </div>
+            </div>
+
+            <div className="flex justify-end">
+              <button
+                type="button"
+                onClick={() => navigate(-1)}
+                className="bg-white py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#EBE5C2] mr-3"
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-[#504B38] hover:bg-[#3a3728] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#EBE5C2]"
+              >
+                Add Book
+              </button>
+            </div>
+          </form>
         </div>
-      </section>
+      </div>
     </div>
   );
 };

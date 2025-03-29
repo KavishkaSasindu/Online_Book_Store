@@ -16,6 +16,8 @@ import About from "./pages/About.jsx";
 import Authors from "./pages/user/Authors.jsx";
 import Wishlist from "./pages/user/Wishlist.jsx";
 import AuthorViewBooks from "./pages/user/AuthorViewBooks.jsx";
+import ManageBooks from "./pages/author/ManageBooks.jsx";
+import BookUpdate from "./pages/author/BookUpdate.jsx";
 
 const App = () => {
   return (
@@ -48,7 +50,9 @@ const App = () => {
           />
 
           {/* author routes */}
-          <Route path="/author/add-book" element={<CreateBook />} />
+          <Route path="/author/add-book/:id" element={<CreateBook />} />
+          <Route path="/author/my-books/:id" element={<ManageBooks />} />
+          <Route path="/author/update-book/:id" element={<BookUpdate />} />
 
           {/* admin routes */}
           <Route path="/admin/dashboard" element={<AdminDashboard />} />

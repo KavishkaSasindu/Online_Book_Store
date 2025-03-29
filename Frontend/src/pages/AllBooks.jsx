@@ -9,6 +9,7 @@ const AllBooks = () => {
   const [filteredBooks, setFilteredBooks] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [searchQuery, setSearchQuery] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   const navigate = useNavigate();
 
@@ -56,6 +57,7 @@ const AllBooks = () => {
 
   const fetchData = async () => {
     try {
+      setIsLoading(true);
       const response = await axios.get(
         "http://localhost:8080/public/all-books"
       );
@@ -82,6 +84,7 @@ const AllBooks = () => {
 
       setBooks(bookWithImage);
       setFilteredBooks(bookWithImage);
+      setIsLoading(false);
       console.log(books);
     } catch (error) {
       console.log(error.message);
