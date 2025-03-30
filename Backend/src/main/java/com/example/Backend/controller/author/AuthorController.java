@@ -181,4 +181,33 @@ public class AuthorController {
                     .body(new ResponseMessageDto(e.getMessage()));
         }
     }
+
+//    get book bookId
+    @GetMapping("/get-one-book/{bookId}/{authorId}")
+    public ResponseEntity<?> getBookById(@PathVariable Long bookId,@PathVariable Long authorId) {
+        try{
+            Book returnValue = authorService.getBookById(bookId,authorId);
+            if(returnValue != null) {
+                return ResponseEntity
+                        .status(HttpStatus.OK)
+                        .body(new BookResponse(
+                                returnValue.getBookId(),
+                                returnValue.getBookName(),
+                                returnValue.getDescription(),
+                                returnValue.getImageName(),
+                                returnValue.getPrice(),
+                                returnValue.getImageData(),
+                                returnValue.getAuthorProfile().getAuthorName(),
+                                returnValue.getCategory()
+                        ));
+            }
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body(new ResponseMessageDto("error occurred"));
+        }catch(Exception e) {
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ResponseMessageDto(e.getMessage()));
+        }
+    }
 }

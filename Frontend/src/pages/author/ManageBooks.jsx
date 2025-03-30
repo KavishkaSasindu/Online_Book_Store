@@ -161,7 +161,7 @@ const ManageBooks = () => {
                       </button>
                       <button
                         onClick={() =>
-                          navigate(`/author/update-book/${book.bookId}`)
+                          navigate(`/author/update-book/${book.bookId}/${id}`)
                         }
                         className="px-4 py-2 rounded bg-[#504B38] text-white font-medium"
                       >

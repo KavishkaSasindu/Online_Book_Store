@@ -82,7 +82,7 @@ const AuthorsTable = () => {
           </div>
 
           {/* Authors Table */}
-          <div className="bg-white shadow-md rounded-lg overflow-hidden">
+          <div className="bg-gray-200 shadow-md rounded-lg overflow-hidden">
             <table className="w-full">
               <thead className="bg-[#504B38] text-white">
                 <tr>
@@ -96,7 +96,7 @@ const AuthorsTable = () => {
                 {filteredAuthors.map((author) => (
                   <tr
                     key={author.userId}
-                    className="border-b hover:bg-gray-50 transition-colors"
+                    className=" hover:bg-gray-50 transition-colors"
                   >
                     <td className="px-6 py-4">
                       <img

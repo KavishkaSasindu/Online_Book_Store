@@ -189,4 +189,23 @@ public class AuthorService {
         return book;
     }
 
+//    get book by bookId
+    public Book getBookById(Long bookId, Long authorId) {
+//        find author is existed
+        AuthorProfile existingAuthor = checkAuthorExists(authorId);
+        if(existingAuthor == null) {
+            throw new RuntimeException("Author not found");
+        }
+        Optional<Book> existingBook = bookRepo.findById(bookId);
+        if(existingBook.isEmpty()) {
+            throw new RuntimeException("Book not found");
+        }
+
+        Book book = existingBook.get();
+        if(!Objects.equals(book.getAuthorProfile().getAuthorId(), existingAuthor.getAuthorId())) {
+            throw new RuntimeException("Author not belongs to this book");
+        }
+        return book;
+    }
+
 }

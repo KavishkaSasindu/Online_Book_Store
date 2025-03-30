@@ -52,7 +52,10 @@ const App = () => {
           {/* author routes */}
           <Route path="/author/add-book/:id" element={<CreateBook />} />
           <Route path="/author/my-books/:id" element={<ManageBooks />} />
-          <Route path="/author/update-book/:id" element={<BookUpdate />} />
+          <Route
+            path="/author/update-book/:id/:authorId"
+            element={<BookUpdate />}
+          />
 
           {/* admin routes */}
           <Route path="/admin/dashboard" element={<AdminDashboard />} />
