@@ -54,6 +54,8 @@ const AuthorsTable = () => {
     return author.authorName.toLowerCase().includes(searchTermLower);
   });
 
+  console.log(authors);
+
   useEffect(() => {
     fetchData();
   }, []);

@@ -237,6 +237,17 @@ const UserNavbar = () => {
             Wishlist
           </Link>
           <Link
+            to="/about"
+            className={`block text-[#504B38] font-medium py-2 rounded-md px-3 ${
+              isActive("/wishlist")
+                ? "bg-[#504B38]/20 text-[#3A3728]"
+                : "hover:bg-[#504B38]/10 hover:text-[#3A3728]"
+            }`}
+            onClick={() => setMobileMenuOpen(false)}
+          >
+            About
+          </Link>
+          <Link
             to="/profile"
             className={`block text-[#504B38] font-medium py-2 rounded-md px-3 ${
               isActive("/profile")

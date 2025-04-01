@@ -73,7 +73,7 @@ const CreateBook = () => {
       const data = await response.data;
       if (response.status == 201) {
         alert("Book successfully added,View in your books");
-        navigate("/all-books");
+        navigate(`/author/my-books/${id}`);
       }
     } catch (error) {
       console.log(error);

@@ -135,6 +135,16 @@ const AuthorNavbar = () => {
             >
               Authors
             </Link>
+            <Link
+              to={`/about`}
+              className={`px-3 py-2 rounded-md text-[#504B38] font-medium transition-colors ${
+                isActive(`/user/user-wishlist/${userId}`)
+                  ? "bg-[#504B38]/20 text-[#3A3728]"
+                  : "hover:bg-[#504B38]/10 hover:text-[#3A3728]"
+              }`}
+            >
+              About
+            </Link>
           </div>
 
           {/* Author Profile */}
@@ -162,7 +172,7 @@ const AuthorNavbar = () => {
                 }`}
               >
                 <Link
-                  to="/author-profile"
+                  to={`/author/my-profile/${authorId}`}
                   className=" px-4 py-2 text-[#504B38] hover:bg-[#EBE5C2] transition-colors flex items-center"
                 >
                   <User className="h-4 w-4 mr-2 inline" />

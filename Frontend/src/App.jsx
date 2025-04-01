@@ -18,6 +18,9 @@ import Wishlist from "./pages/user/Wishlist.jsx";
 import AuthorViewBooks from "./pages/user/AuthorViewBooks.jsx";
 import ManageBooks from "./pages/author/ManageBooks.jsx";
 import BookUpdate from "./pages/author/BookUpdate.jsx";
+import AuthorProfile from "./pages/author/AuthorProfile.jsx";
+import UpdateProfile from "./pages/author/UpdateProfile.jsx";
+import AdminAllBooks from "./pages/admin/AdminAllBooks.jsx";
 
 const App = () => {
   return (
@@ -52,6 +55,11 @@ const App = () => {
           {/* author routes */}
           <Route path="/author/add-book/:id" element={<CreateBook />} />
           <Route path="/author/my-books/:id" element={<ManageBooks />} />
+          <Route path="/author/my-profile/:id" element={<AuthorProfile />} />
+          <Route
+            path="/author/update-profile/:id"
+            element={<UpdateProfile />}
+          />
           <Route
             path="/author/update-book/:id/:authorId"
             element={<BookUpdate />}
@@ -60,6 +68,7 @@ const App = () => {
           {/* admin routes */}
           <Route path="/admin/dashboard" element={<AdminDashboard />} />
           <Route path="/admin/dashboard/users" element={<AdminUsers />} />
+          <Route path="/admin/dashboard/books" element={<AdminAllBooks />} />
         </Routes>
       </BrowserRouter>
     </div>
