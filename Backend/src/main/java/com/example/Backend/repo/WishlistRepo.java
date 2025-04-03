@@ -10,4 +10,5 @@ import java.util.List;
 @Repository
 public interface WishlistRepo extends JpaRepository<Book, Long> {
     void deleteByBookId(Long bookId);
+
 }

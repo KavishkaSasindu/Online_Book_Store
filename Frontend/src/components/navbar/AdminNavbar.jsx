@@ -112,27 +112,7 @@ const AdminNavbar = () => {
               Books
             </Link>
             <Link
-              to="/admin/authors"
-              className={`px-3 py-2 rounded-md text-[#504B38] font-medium transition-colors ${
-                isActive("/admin/authors")
-                  ? "bg-[#504B38]/20 text-[#3A3728]"
-                  : "hover:bg-[#504B38]/10 hover:text-[#3A3728]"
-              }`}
-            >
-              Authors
-            </Link>
-            <Link
-              to="/admin/reports"
-              className={`px-3 py-2 rounded-md text-[#504B38] font-medium transition-colors ${
-                isActive("/admin/reports")
-                  ? "bg-[#504B38]/20 text-[#3A3728]"
-                  : "hover:bg-[#504B38]/10 hover:text-[#3A3728]"
-              }`}
-            >
-              All Books
-            </Link>
-            <Link
-              to="/admin/wishlist"
+              to={`/user/user-wishlist/${id}`}
               className={`px-3 py-2 rounded-md text-[#504B38] font-medium transition-colors ${
                 isActive("/admin/wishlist")
                   ? "bg-[#504B38]/20 text-[#3A3728]"

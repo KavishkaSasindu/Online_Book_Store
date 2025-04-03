@@ -21,6 +21,7 @@ import BookUpdate from "./pages/author/BookUpdate.jsx";
 import AuthorProfile from "./pages/author/AuthorProfile.jsx";
 import UpdateProfile from "./pages/author/UpdateProfile.jsx";
 import AdminAllBooks from "./pages/admin/AdminAllBooks.jsx";
+import AdminUserReadUpdate from "./pages/admin/AdminUserReadUpdate.jsx";
 
 const App = () => {
   return (
@@ -69,6 +70,10 @@ const App = () => {
           <Route path="/admin/dashboard" element={<AdminDashboard />} />
           <Route path="/admin/dashboard/users" element={<AdminUsers />} />
           <Route path="/admin/dashboard/books" element={<AdminAllBooks />} />
+          <Route
+            path="/admin/dashboard/read-update-user/:id"
+            element={<AdminUserReadUpdate />}
+          />
         </Routes>
       </BrowserRouter>
     </div>
