@@ -6,7 +6,7 @@ This project demonstrates an online book management system. It can be used by sm
 
 ## 📸 Screenshots
 
-![Home Page](Screenshot2025-05-03201553.png)
+![Home Page](./Screenshot2025-05-03201553.png)
 
 ## 📘 About
 
