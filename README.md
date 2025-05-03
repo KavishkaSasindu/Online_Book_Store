@@ -58,12 +58,13 @@ git clone https://github.com/KavishkaSasindu/Online_Book_Store.git
 2. Then go to Frontend folder
 
 ```bash
+//open a terminal
 cd Frontend
 ```
 3. install dependencies
 
 ```bash
-cd Frontend
+// in that same folder location above i mentioned
 npm install
 // after run the frontend
 npm run dev
@@ -73,8 +74,8 @@ npm run dev
 5. Or you can manually install backend dependencies
 
 ```bash
-cd Backend
 //open a terminal
+cd Backend
 mvn install: run
 ```
 
