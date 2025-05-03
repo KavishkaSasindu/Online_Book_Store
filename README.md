@@ -4,8 +4,6 @@ This project demonstrates an online book management system. It can be used by sm
 
 ---
 
-## 📸 Screenshots
-
 ![Home Page](Home.png)
 
 ## 📘 About
@@ -57,4 +55,35 @@ This project serves as a practical example for developers interested in building
 ```bash
 git clone https://github.com/KavishkaSasindu/Online_Book_Store.git
 ```
+2. Then go to Frontend folder
 
+```bash
+cd Frontend
+```
+3. install dependencies
+
+```bash
+cd Frontend
+npm install
+// after run the frontend
+npm run dev
+```
+
+4. Open backend folder via editor like Intellij Idea
+5. Or you can manually install backend dependencies
+
+```bash
+cd Backend
+//open a terminal
+mvn install: run
+```
+
+## 🔚 Then you can configure the database property 
+
+```bash
+spring.datasource.url= your database url
+spring.datasource.username= your databsase username (postgres)
+spring.datasource.password= your database password
+```
+
+then run done with all setup and configuration.
